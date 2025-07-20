@@ -1,7 +1,89 @@
+import { useEffect, useState } from "react";
+import { getSlackOAuthUrl } from "../../api/login";
+
 export const SlackLogin = () => {
+  const [slackUrl, setSlackUrl] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchSlackUrl = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+
+        const response = await getSlackOAuthUrl();
+        const url = response.redirectUrl;
+
+        setSlackUrl(url || null);
+
+      } catch (err) {
+        console.error('Error fetching Slack OAuth URL:', err);
+        setError(
+          err instanceof Error ? err.message : "Failed to get Slack OAuth URL"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSlackUrl();
+  }, []);
+
+  if (loading) {
+    return (
+      <div
+        style={{
+          alignItems: "center",
+          color: "#666",
+          backgroundColor: "#f5f5f5",
+          border: "1px solid #ddd",
+          borderRadius: "4px",
+          display: "inline-flex",
+          fontFamily: "Lato, sans-serif",
+          fontSize: "16px",
+          fontWeight: 600,
+          height: "48px",
+          justifyContent: "center",
+          textDecoration: "none",
+          width: "256px",
+        }}
+      >
+        Loading...
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div
+        style={{
+          alignItems: "center",
+          color: "#d32f2f",
+          backgroundColor: "#ffebee",
+          border: "1px solid #f44336",
+          borderRadius: "4px",
+          display: "inline-flex",
+          fontFamily: "Lato, sans-serif",
+          fontSize: "16px",
+          fontWeight: 600,
+          height: "48px",
+          justifyContent: "center",
+          textDecoration: "none",
+          width: "256px",
+        }}
+      >
+        Error loading Slack login
+      </div>
+    );
+  }
+
+  if (!slackUrl) {
+    return null;
+  }
+
   return (
     <a
-      href="https://slack.com/openid/connect/authorize?scope=openid&amp;response_type=code&amp;redirect_uri=https%3A%2F%2Flocalhost%3A5173%2Fauth%2Fslack%2Fcallback&amp;client_id=982172669153.9219286199603"
+      href={slackUrl}
       style={{
         alignItems: "center",
         color: "#000",
