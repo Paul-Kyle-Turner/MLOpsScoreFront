@@ -15,6 +15,7 @@ import {
   HardDrive,
   Eye,
 } from "lucide-react";
+import { useTheme } from "../../hooks/useTheme";
 import type { PlatformInformation } from "../../model/platform";
 
 interface PlatformCardProps {
@@ -22,6 +23,7 @@ interface PlatformCardProps {
 }
 
 export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
+  const { theme } = useTheme();
   const primaryRegion = platform.regions[0];
 
   // Fix the minPrice calculation with proper null checks
@@ -50,14 +52,17 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
     }
   };
 
-  console.log("Platform Card Rendered", platform);
+  console.log("Platform Card Rendered", platform, "Theme:", theme);
 
   return (
-    <Card style={{ maxWidth: "300px", maxHeight: "400px" }} className="h-100">
-      <Card.Header className="bg-light border-0 pb-2">
+    <Card
+      style={{ maxWidth: "300px", maxHeight: "400px" }}
+      className="h-100 hover-shadow-lg"
+    >
+      <Card.Header className="border-0 pb-2">
         <div className="d-flex justify-content-between align-items-start">
           <div>
-            <Card.Title className="mb-1 text-dark fw-bold">
+            <Card.Title className="mb-1 fw-bold">
               {platform.platformName}
             </Card.Title>
             <Badge
@@ -170,7 +175,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
         </div>
       </Card.Body>
 
-      <Card.Footer className="bg-white border-0 pt-0">
+      <Card.Footer className="border-0 pt-0">
         <Row className="g-2">
           <Col>
             <Link
