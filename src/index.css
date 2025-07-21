@@ -178,3 +178,61 @@
   margin-bottom: 10px;
   background-color: var(--bs-secondary-bg);
 }
+
+/* Platform page enhancements */
+.platform-section {
+  background-color: var(--custom-card-bg);
+  border: 1px solid var(--custom-card-border);
+  border-radius: 8px;
+  margin-bottom: 1.5rem;
+  box-shadow: 0 2px 4px var(--custom-shadow);
+  transition: box-shadow 0.3s ease;
+}
+
+.platform-section:hover {
+  box-shadow: 0 4px 12px var(--custom-hover-shadow);
+}
+
+.platform-metric-card {
+  background-color: var(--custom-card-bg);
+  border: 1px solid var(--custom-card-border);
+  transition: all 0.3s ease;
+}
+
+.platform-metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--custom-hover-shadow);
+}
+
+/* Theme-aware table styles */
+.table-themed {
+  --bs-table-bg: var(--custom-card-bg);
+  --bs-table-color: var(--bs-body-color);
+  --bs-table-border-color: var(--custom-card-border);
+  --bs-table-hover-bg: var(--bs-secondary-bg);
+}
+
+/* Badge adjustments for dark theme */
+[data-bs-theme="dark"] .badge.bg-light {
+  background-color: #495057 !important;
+  color: #fff !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+  color: #e9ecef !important;
+}
+
+/* Loading spinner theme support */
+.spinner-border.text-primary {
+  color: var(--bs-primary) !important;
+}
+
+/* Enhanced card hover effects */
+.hover-lift {
+  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px var(--custom-hover-shadow);
+}

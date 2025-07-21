@@ -44,8 +44,14 @@ const Platform: React.FC = () => {
   if (loading) {
     return (
       <BasePage title="Loading Platform...">
-        <div className="flex items-center justify-center min-h-96">
-          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600"></div>
+        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
+          <div className="text-center">
+            <div className="spinner-border text-primary mb-3" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+            <h4 style={{ color: "var(--bs-body-color)" }}>Loading Platform Information...</h4>
+            <p className="text-muted">Please wait while we fetch the details.</p>
+          </div>
         </div>
       </BasePage>
     );
@@ -54,16 +60,25 @@ const Platform: React.FC = () => {
   if (error) {
     return (
       <BasePage title="Error">
-        <div className="flex items-center justify-center min-h-96">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Error</h1>
-            <p className="text-gray-600 mb-4">{error}</p>
-            <button
-              onClick={() => navigate("/")}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-            >
-              Go Home
-            </button>
+        <div className="container mt-4">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="card border-danger">
+                <div className="card-body text-center">
+                  <h1 className="card-title text-danger">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                    Error
+                  </h1>
+                  <p className="card-text text-danger">{error}</p>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={() => navigate("/")}
+                  >
+                    Go Home
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </BasePage>
@@ -73,11 +88,25 @@ const Platform: React.FC = () => {
   if (!platform) {
     return (
       <BasePage title="Platform Not Found">
-        <div className="flex items-center justify-center min-h-96">
-          <div className="text-center">
-            <h1 className="text-2xl font-bold text-gray-900">
-              Platform not found
-            </h1>
+        <div className="container mt-4">
+          <div className="row justify-content-center">
+            <div className="col-md-6">
+              <div className="card border-warning">
+                <div className="card-body text-center">
+                  <h1 className="card-title text-warning">
+                    <i className="bi bi-search me-2"></i>
+                    Platform Not Found
+                  </h1>
+                  <p className="card-text">The platform you're looking for doesn't exist or has been removed.</p>
+                  <button 
+                    className="btn btn-primary" 
+                    onClick={() => navigate("/")}
+                  >
+                    Go Home
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </BasePage>
@@ -86,538 +115,616 @@ const Platform: React.FC = () => {
 
   return (
     <BasePage title={platform.platformName}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Navigation */}
-        <div className="mb-4">
-          <button
-            onClick={() => navigate(-1)}
-            className="flex items-center text-gray-600 hover:text-gray-900"
-          >
-            <svg
-              className="w-4 h-4 mr-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back
-          </button>
-        </div>
+      <div className="container-fluid px-4 py-3">
+        {/* Back Button */}
+        <button 
+          className="btn btn-outline-secondary mb-4" 
+          onClick={() => navigate(-1)}
+        >
+          <i className="bi bi-arrow-left me-2"></i>
+          Back
+        </button>
 
-        {/* Header */}
-        <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
-          <div className="flex justify-between items-start">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">
-                {platform.platformName}
-              </h1>
-              <p className="text-lg text-gray-600 mt-1">
-                {platform.platformType}
-              </p>
-              {platform.parentCompany && (
-                <p className="text-sm text-gray-500 mt-1">
-                  by {platform.parentCompany}
-                </p>
-              )}
-            </div>
-            <div className="flex space-x-4">
-              {platform.websiteUrl && (
-                <a
-                  href={platform.websiteUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-                >
-                  Visit Website
-                </a>
-              )}
-              {platform.documentationUrl && (
-                <a
-                  href={platform.documentationUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700"
-                >
-                  Documentation
-                </a>
-              )}
+        {/* Platform Header */}
+        <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+          <div className="card-body">
+            <div className="row align-items-center">
+              <div className="col-md-8">
+                <h1 className="display-5 fw-bold mb-2" style={{ color: "var(--bs-body-color)" }}>
+                  {platform.platformName}
+                </h1>
+                <span className="badge bg-primary fs-6 mb-3">{platform.platformType}</span>
+                {platform.parentCompany && (
+                  <p className="lead text-muted mb-3">
+                    <i className="bi bi-building me-2"></i>
+                    by {platform.parentCompany}
+                  </p>
+                )}
+              </div>
+              <div className="col-md-4 text-md-end">
+                <div className="d-flex flex-column gap-2">
+                  {platform.websiteUrl && (
+                    <a
+                      href={platform.websiteUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-primary"
+                    >
+                      <i className="bi bi-globe me-2"></i>
+                      Visit Website
+                    </a>
+                  )}
+                  {platform.documentationUrl && (
+                    <a
+                      href={platform.documentationUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline-info"
+                    >
+                      <i className="bi bi-file-text me-2"></i>
+                      Documentation
+                    </a>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Overview Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-sm font-medium text-gray-500">Regions</h3>
-            <p className="text-2xl font-bold text-gray-900">
-              {platform.regions.length}
-            </p>
+        {/* Key Metrics */}
+        <div className="row mb-4">
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+              <div className="card-body">
+                <i className="bi bi-geo-alt-fill text-primary fs-1 mb-2"></i>
+                <h3 className="fw-bold text-primary">{platform.regions.length}</h3>
+                <p className="text-muted mb-0">Regions</p>
+              </div>
+            </div>
           </div>
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-sm font-medium text-gray-500">
-              Instance Types
-            </h3>
-            <p className="text-2xl font-bold text-gray-900">
-              {platform.computeInstances.length}
-            </p>
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+              <div className="card-body">
+                <i className="bi bi-cpu-fill text-success fs-1 mb-2"></i>
+                <h3 className="fw-bold text-success">{platform.computeInstances.length}</h3>
+                <p className="text-muted mb-0">Instance Types</p>
+              </div>
+            </div>
           </div>
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-sm font-medium text-gray-500">SLA Uptime</h3>
-            <p className="text-2xl font-bold text-gray-900">
-              {platform.slaUptime ? `${platform.slaUptime}%` : "N/A"}
-            </p>
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+              <div className="card-body">
+                <i className="bi bi-shield-check text-info fs-1 mb-2"></i>
+                <h3 className="fw-bold text-info">{platform.slaUptime ? `${platform.slaUptime}%` : "N/A"}</h3>
+                <p className="text-muted mb-0">SLA Uptime</p>
+              </div>
+            </div>
           </div>
-          <div className="bg-white rounded-lg shadow-sm p-6">
-            <h3 className="text-sm font-medium text-gray-500">Support Tiers</h3>
-            <p className="text-2xl font-bold text-gray-900">
-              {platform.supportTiers.length}
-            </p>
+          <div className="col-md-3 col-sm-6 mb-3">
+            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+              <div className="card-body">
+                <i className="bi bi-headset text-warning fs-1 mb-2"></i>
+                <h3 className="fw-bold text-warning">{platform.supportTiers.length}</h3>
+                <p className="text-muted mb-0">Support Tiers</p>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Content Sections */}
-        <div className="space-y-6">
-          {/* Geographic Regions */}
-          <RegionsSection regions={platform.regions} />
+        <RegionsSection regions={platform.regions} />
+        <ComputeInstancesSection instances={platform.computeInstances} />
+        <SecurityComplianceSection
+          security={platform.securityFeatures}
+          compliance={platform.complianceCertifications}
+        />
 
-          {/* Compute Instances */}
-          <ComputeInstancesSection instances={platform.computeInstances} />
-
-          {/* Security & Compliance */}
-          <SecurityComplianceSection
-            security={platform.securityFeatures}
-            compliance={platform.complianceCertifications}
+        {(platform.proprietarySoftware.length > 0 ||
+          platform.proprietaryHardware.length > 0) && (
+          <ProprietaryTechSection
+            software={platform.proprietarySoftware}
+            hardware={platform.proprietaryHardware}
           />
+        )}
 
-          {/* Proprietary Technology */}
-          {(platform.proprietarySoftware.length > 0 ||
-            platform.proprietaryHardware.length > 0) && (
-            <ProprietaryTechSection
-              software={platform.proprietarySoftware}
-              hardware={platform.proprietaryHardware}
-            />
-          )}
-
-          {/* Support */}
-          <SupportSection supportTiers={platform.supportTiers} />
-
-          {/* Additional Information */}
-          <AdditionalInfoSection platform={platform} />
-        </div>
+        <SupportSection supportTiers={platform.supportTiers} />
+        <AdditionalInfoSection platform={platform} />
       </div>
     </BasePage>
   );
 };
 
-// Component for Geographic Regions
 const RegionsSection: React.FC<{ regions: PlatformInformation["regions"] }> = ({
   regions,
 }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">Geographic Regions</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {regions.map((region, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-900">{region.regionName}</h3>
-          {region.regionCode && (
-            <p className="text-sm text-gray-600">Code: {region.regionCode}</p>
-          )}
-          <p className="text-sm text-gray-600">Country: {region.countryCode}</p>
-          <p className="text-sm text-gray-600">Tier: {region.datacenterTier}</p>
-          {region.availabilityZones && (
-            <p className="text-sm text-gray-600">
-              AZs: {region.availabilityZones}
-            </p>
-          )}
-          {region.edgeLocation && (
-            <span className="inline-block bg-orange-100 text-orange-800 text-xs px-2 py-1 rounded mt-2">
-              Edge Location
-            </span>
-          )}
-        </div>
-      ))}
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-geo-alt-fill text-primary me-3"></i>
+        Geographic Regions
+      </h2>
+    </div>
+    <div className="card-body">
+      <div className="row">
+        {regions.map((region, index) => (
+          <div key={index} className="col-lg-4 col-md-6 mb-4">
+            <div className="card h-100 border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+              <div className="card-body">
+                <h5 className="card-title fw-bold text-primary">
+                  <i className="bi bi-pin-map me-2"></i>
+                  {region.regionName}
+                </h5>
+                <div className="row g-2 small">
+                  {region.regionCode && (
+                    <div className="col-6">
+                      <span className="text-muted">Code:</span>
+                      <span className="fw-semibold ms-1">{region.regionCode}</span>
+                    </div>
+                  )}
+                  <div className="col-6">
+                    <span className="text-muted">Country:</span>
+                    <span className="fw-semibold ms-1">{region.countryCode}</span>
+                  </div>
+                  <div className="col-6">
+                    <span className="text-muted">Tier:</span>
+                    <span className="badge bg-info ms-1">{region.datacenterTier}</span>
+                  </div>
+                  {region.availabilityZones && (
+                    <div className="col-6">
+                      <span className="text-muted">AZs:</span>
+                      <span className="fw-semibold ms-1">{region.availabilityZones}</span>
+                    </div>
+                  )}
+                </div>
+                {region.edgeLocation && (
+                  <div className="mt-2">
+                    <span className="badge bg-success">
+                      <i className="bi bi-lightning-fill me-1"></i>
+                      Edge Location
+                    </span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 );
 
-// Component for Compute Instances
 const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
   instances,
 }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">Compute Instances</h2>
-    <div className="overflow-x-auto">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Instance
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              vCPUs
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Memory
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Storage
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              GPU
-            </th>
-            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Starting Price
-            </th>
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-          {instances.map((instance, index) => {
-            const minPrice = Math.min(
-              ...instance.pricingModels
-                .filter((p) => p.pricePerHour)
-                .map((p) => p.pricePerHour!)
-            );
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-cpu-fill text-success me-3"></i>
+        Compute Instances
+      </h2>
+    </div>
+    <div className="card-body p-0">
+      <div className="table-responsive">
+        <table className="table table-hover mb-0" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+          <thead style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
+            <tr>
+              <th className="border-0 fw-bold">Instance</th>
+              <th className="border-0 fw-bold text-center">vCPUs</th>
+              <th className="border-0 fw-bold text-center">Memory</th>
+              <th className="border-0 fw-bold text-center">Storage</th>
+              <th className="border-0 fw-bold text-center">GPU</th>
+              <th className="border-0 fw-bold text-center">Starting Price</th>
+            </tr>
+          </thead>
+          <tbody>
+            {instances.map((instance, index) => {
+              const minPrice = Math.min(
+                ...instance.pricingModels
+                  .filter((p) => p.pricePerHour)
+                  .map((p) => p.pricePerHour!)
+              );
 
-            return (
-              <tr key={index}>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <div>
-                    <div className="text-sm font-medium text-gray-900">
-                      {instance.instanceName}
-                    </div>
+              return (
+                <tr key={index} style={{ borderColor: "var(--custom-card-border)" }}>
+                  <td className="border-0">
+                    <div className="fw-bold text-primary">{instance.instanceName}</div>
                     {instance.instanceFamily && (
-                      <div className="text-sm text-gray-500">
-                        {instance.instanceFamily}
-                      </div>
+                      <small className="text-muted">{instance.instanceFamily}</small>
                     )}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {instance.vcpus}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {instance.memoryGb} GB
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {instance.storageGb ? `${instance.storageGb} GB` : "N/A"}
-                  {instance.storageType && (
-                    <div className="text-xs text-gray-500">
-                      {instance.storageType}
-                    </div>
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {instance.gpuCount ? (
+                  </td>
+                  <td className="border-0 text-center">
+                    <span className="badge bg-light text-dark">{instance.vcpus}</span>
+                  </td>
+                  <td className="border-0 text-center">
+                    <span className="fw-semibold">{instance.memoryGb} GB</span>
+                  </td>
+                  <td className="border-0 text-center">
                     <div>
-                      {instance.gpuCount}x {instance.gpuType || "GPU"}
-                      {instance.gpuMemoryGb && (
-                        <div className="text-xs text-gray-500">
-                          {instance.gpuMemoryGb} GB
+                      {instance.storageGb ? `${instance.storageGb} GB` : "N/A"}
+                      {instance.storageType && (
+                        <div>
+                          <small className="text-muted">{instance.storageType}</small>
                         </div>
                       )}
                     </div>
-                  ) : (
-                    "None"
-                  )}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {!isNaN(minPrice) ? `$${minPrice.toFixed(2)}/hr` : "Contact"}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+                  </td>
+                  <td className="border-0 text-center">
+                    {instance.gpuCount ? (
+                      <div>
+                        <div className="fw-semibold text-warning">
+                          {instance.gpuCount}x {instance.gpuType || "GPU"}
+                        </div>
+                        {instance.gpuMemoryGb && (
+                          <small className="text-muted">{instance.gpuMemoryGb} GB</small>
+                        )}
+                      </div>
+                    ) : (
+                      <span className="text-muted">None</span>
+                    )}
+                  </td>
+                  <td className="border-0 text-center">
+                    {!isNaN(minPrice) ? (
+                      <span className="fw-bold text-success">${minPrice.toFixed(2)}/hr</span>
+                    ) : (
+                      <span className="text-muted">Contact</span>
+                    )}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 );
 
-// Component for Security & Compliance
 const SecurityComplianceSection: React.FC<{
   security: PlatformInformation["securityFeatures"];
   compliance: PlatformInformation["complianceCertifications"];
 }> = ({ security, compliance }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">
-      Security & Compliance
-    </h2>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Security Features */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          Security Features
-        </h3>
-        <div className="space-y-2">
-          {Object.entries(security).map(([key, value]) => (
-            <div key={key} className="flex justify-between items-center">
-              <span className="text-sm text-gray-600 capitalize">
-                {key.replace(/([A-Z])/g, " $1").trim()}
-              </span>
-              <span
-                className={`text-sm font-medium ${
-                  value ? "text-green-600" : "text-red-600"
-                }`}
-              >
-                {value ? "✓" : "✗"}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Compliance Certifications */}
-      <div>
-        <h3 className="text-lg font-semibold text-gray-900 mb-3">
-          Compliance Certifications
-        </h3>
-        <div className="space-y-3">
-          {compliance.map((cert, index) => (
-            <div key={index} className="border border-gray-200 rounded-lg p-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <h4 className="font-medium text-gray-900">
-                    {cert.certificationName}
-                  </h4>
-                  {cert.certifyingBody && (
-                    <p className="text-sm text-gray-600">
-                      {cert.certifyingBody}
-                    </p>
-                  )}
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-shield-check text-info me-3"></i>
+        Security & Compliance
+      </h2>
+    </div>
+    <div className="card-body">
+      <div className="row">
+        <div className="col-lg-6 mb-4">
+          <h5 className="text-info mb-3">
+            <i className="bi bi-lock-fill me-2"></i>
+            Security Features
+          </h5>
+          <div className="row g-2">
+            {Object.entries(security).map(([key, value]) => (
+              <div key={key} className="col-sm-6">
+                <div className="d-flex align-items-center p-2 rounded" style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
+                  <span className={`me-2 ${value ? "text-success" : "text-danger"}`}>
+                    <i className={`bi ${value ? "bi-check-circle-fill" : "bi-x-circle-fill"}`}></i>
+                  </span>
+                  <span className="small">
+                    {key.replace(/([A-Z])/g, " $1").trim()}
+                  </span>
                 </div>
-                <span
-                  className={`text-xs px-2 py-1 rounded ${
-                    cert.status === "Certified"
-                      ? "bg-green-100 text-green-800"
-                      : cert.status === "In Progress"
-                      ? "bg-yellow-100 text-yellow-800"
-                      : "bg-gray-100 text-gray-800"
-                  }`}
-                >
-                  {cert.status}
-                </span>
               </div>
-              {cert.certificationDate && (
-                <p className="text-sm text-gray-500 mt-1">
-                  Certified:{" "}
-                  {new Date(cert.certificationDate).toLocaleDateString()}
-                </p>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
+        </div>
+
+        <div className="col-lg-6">
+          <h5 className="text-warning mb-3">
+            <i className="bi bi-award-fill me-2"></i>
+            Compliance Certifications
+          </h5>
+          <div className="row g-3">
+            {compliance.map((cert, index) => (
+              <div key={index} className="col-12">
+                <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                  <div className="card-body p-3">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h6 className="card-title mb-1 fw-bold text-primary">
+                          {cert.certificationName}
+                        </h6>
+                        {cert.certifyingBody && (
+                          <p className="small text-muted mb-1">
+                            <i className="bi bi-building me-1"></i>
+                            {cert.certifyingBody}
+                          </p>
+                        )}
+                        {cert.certificationDate && (
+                          <p className="small text-muted mb-0">
+                            <i className="bi bi-calendar-check me-1"></i>
+                            Certified: {new Date(cert.certificationDate).toLocaleDateString()}
+                          </p>
+                        )}
+                      </div>
+                      <span className={`badge ${cert.status === 'Certified' ? 'bg-success' : cert.status === 'In Progress' ? 'bg-warning' : cert.status === 'Planned' ? 'bg-info' : 'bg-secondary'}`}>
+                        {cert.status}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </div>
   </div>
 );
 
-// Component for Proprietary Technology
 const ProprietaryTechSection: React.FC<{
   software: ProprietarySoftware[];
   hardware: ProprietaryHardware[];
 }> = ({ software, hardware }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">
-      Proprietary Technology
-    </h2>
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Software */}
-      {software.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Software</h3>
-          <div className="space-y-3">
-            {software.map((sw, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 rounded-lg p-4"
-              >
-                <div className="flex justify-between items-start mb-2">
-                  <h4 className="font-medium text-gray-900">
-                    {sw.softwareName}
-                  </h4>
-                  <span
-                    className={`text-xs px-2 py-1 rounded ${
-                      sw.openSource
-                        ? "bg-green-100 text-green-800"
-                        : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {sw.openSource ? "Open Source" : "Proprietary"}
-                  </span>
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-gear-fill text-warning me-3"></i>
+        Proprietary Technology
+      </h2>
+    </div>
+    <div className="card-body">
+      <div className="row">
+        {software.length > 0 && (
+          <div className="col-lg-6 mb-4">
+            <h5 className="text-primary mb-3">
+              <i className="bi bi-code-slash me-2"></i>
+              Software
+            </h5>
+            <div className="row g-3">
+              {software.map((sw, index) => (
+                <div key={index} className="col-12">
+                  <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                    <div className="card-body p-3">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <h6 className="card-title mb-1 fw-bold">{sw.softwareName}</h6>
+                        <span className={`badge ${sw.openSource ? 'bg-success' : 'bg-warning'}`}>
+                          {sw.openSource ? "Open Source" : "Proprietary"}
+                        </span>
+                      </div>
+                      <p className="card-text small text-muted mb-2">{sw.description}</p>
+                      <div className="small">
+                        <span className="text-muted">Type:</span>
+                        <span className="fw-semibold ms-1">{sw.softwareType}</span>
+                        {sw.version && (
+                          <>
+                            <span className="text-muted ms-3">Version:</span>
+                            <span className="fw-semibold ms-1">{sw.version}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-sm text-gray-600 mb-2">{sw.description}</p>
-                <p className="text-sm text-gray-500">Type: {sw.softwareType}</p>
-                {sw.version && (
-                  <p className="text-sm text-gray-500">Version: {sw.version}</p>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
-      {/* Hardware */}
-      {hardware.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-3">Hardware</h3>
-          <div className="space-y-3">
-            {hardware.map((hw, index) => (
-              <div
-                key={index}
-                className="border border-gray-200 rounded-lg p-4"
-              >
-                <h4 className="font-medium text-gray-900">{hw.hardwareName}</h4>
-                <p className="text-sm text-gray-600 mb-2">{hw.description}</p>
-                <p className="text-sm text-gray-500">Type: {hw.hardwareType}</p>
-                {hw.generation && (
-                  <p className="text-sm text-gray-500">
-                    Generation: {hw.generation}
-                  </p>
-                )}
-                {hw.manufacturingPartner && (
-                  <p className="text-sm text-gray-500">
-                    Partner: {hw.manufacturingPartner}
-                  </p>
-                )}
-              </div>
-            ))}
+        {hardware.length > 0 && (
+          <div className="col-lg-6">
+            <h5 className="text-success mb-3">
+              <i className="bi bi-cpu-fill me-2"></i>
+              Hardware
+            </h5>
+            <div className="row g-3">
+              {hardware.map((hw, index) => (
+                <div key={index} className="col-12">
+                  <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                    <div className="card-body p-3">
+                      <h6 className="card-title mb-1 fw-bold text-success">{hw.hardwareName}</h6>
+                      <p className="card-text small text-muted mb-2">{hw.description}</p>
+                      <div className="small">
+                        <span className="text-muted">Type:</span>
+                        <span className="fw-semibold ms-1">{hw.hardwareType}</span>
+                        {hw.generation && (
+                          <>
+                            <span className="text-muted ms-3">Generation:</span>
+                            <span className="fw-semibold ms-1">{hw.generation}</span>
+                          </>
+                        )}
+                        {hw.manufacturingPartner && (
+                          <>
+                            <span className="text-muted ms-3">Partner:</span>
+                            <span className="fw-semibold ms-1">{hw.manufacturingPartner}</span>
+                          </>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   </div>
 );
 
-// Component for Support
 const SupportSection: React.FC<{ supportTiers: SupportTier[] }> = ({
   supportTiers,
 }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">Support Options</h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-      {supportTiers.map((tier, index) => (
-        <div key={index} className="border border-gray-200 rounded-lg p-4">
-          <h3 className="font-semibold text-gray-900 mb-2">{tier.tierName}</h3>
-          {tier.averageResponseTime && (
-            <p className="text-sm text-gray-600 mb-2">
-              Response Time: {tier.averageResponseTime}
-            </p>
-          )}
-          <p className="text-sm text-gray-600 mb-2">Hours: {tier.hours}</p>
-          {tier.price && (
-            <p className="text-sm font-medium text-green-600 mb-2">
-              {tier.price}
-            </p>
-          )}
-          <div className="text-sm text-gray-600">
-            <p className="font-medium">Channels:</p>
-            <ul className="list-disc list-inside">
-              {tier.channels.map((channel, i) => (
-                <li key={i}>{channel}</li>
-              ))}
-            </ul>
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-headset text-info me-3"></i>
+        Support Options
+      </h2>
+    </div>
+    <div className="card-body">
+      <div className="row">
+        {supportTiers.map((tier, index) => (
+          <div key={index} className="col-lg-4 col-md-6 mb-4">
+            <div className="card h-100 border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+              <div className="card-body">
+                <h5 className="card-title fw-bold text-primary mb-3">
+                  <i className="bi bi-award-fill me-2"></i>
+                  {tier.tierName}
+                </h5>
+                
+                <div className="mb-3">
+                  {tier.averageResponseTime && (
+                    <div className="d-flex align-items-center mb-2">
+                      <i className="bi bi-clock text-warning me-2"></i>
+                      <span className="small">Response Time:</span>
+                      <span className="fw-semibold ms-1">{tier.averageResponseTime}</span>
+                    </div>
+                  )}
+                  
+                  <div className="d-flex align-items-center mb-2">
+                    <i className="bi bi-calendar-range text-info me-2"></i>
+                    <span className="small">Hours:</span>
+                    <span className="fw-semibold ms-1">{tier.hours}</span>
+                  </div>
+                  
+                  {tier.price && (
+                    <div className="d-flex align-items-center mb-3">
+                      <i className="bi bi-currency-dollar text-success me-2"></i>
+                      <span className="fw-bold text-success">{tier.price}</span>
+                    </div>
+                  )}
+                </div>
+
+                <div>
+                  <h6 className="text-muted mb-2">
+                    <i className="bi bi-chat-dots me-1"></i>
+                    Support Channels:
+                  </h6>
+                  <div className="d-flex flex-wrap gap-1">
+                    {tier.channels.map((channel, i) => (
+                      <span key={i} className="badge bg-outline-secondary border small">
+                        {channel}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-      ))}
+        ))}
+      </div>
     </div>
   </div>
 );
 
-// Component for Additional Information
 const AdditionalInfoSection: React.FC<{ platform: PlatformInformation }> = ({
   platform,
 }) => (
-  <div className="bg-white rounded-lg shadow-sm p-6">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">
-      Additional Information
-    </h2>
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {platform.specializations && platform.specializations.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Specializations
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {platform.specializations.map((spec, index) => (
-              <span
-                key={index}
-                className="bg-blue-100 text-blue-800 text-sm px-3 py-1 rounded"
-              >
-                {spec}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {platform.targetMarkets && platform.targetMarkets.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Target Markets
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {platform.targetMarkets.map((market, index) => (
-              <span
-                key={index}
-                className="bg-green-100 text-green-800 text-sm px-3 py-1 rounded"
-              >
-                {market}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {platform.notableCustomers && platform.notableCustomers.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Notable Customers
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {platform.notableCustomers.map((customer, index) => (
-              <span
-                key={index}
-                className="bg-purple-100 text-purple-800 text-sm px-3 py-1 rounded"
-              >
-                {customer}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {platform.partnerships && platform.partnerships.length > 0 && (
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">
-            Partnerships
-          </h3>
-          <div className="flex flex-wrap gap-2">
-            {platform.partnerships.map((partnership, index) => (
-              <span
-                key={index}
-                className="bg-orange-100 text-orange-800 text-sm px-3 py-1 rounded"
-              >
-                {partnership}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+    <div className="card-header bg-transparent border-0 py-3">
+      <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
+        <i className="bi bi-info-circle-fill text-primary me-3"></i>
+        Additional Information
+      </h2>
     </div>
-
-    {/* Metadata */}
-    <div className="mt-6 pt-6 border-t border-gray-200">
-      <div className="text-sm text-gray-500">
-        <p>Last Updated: {new Date(platform.lastUpdated).toLocaleString()}</p>
-        {platform.foundedDate && (
-          <p>Founded: {new Date(platform.foundedDate).toLocaleDateString()}</p>
+    <div className="card-body">
+      <div className="row">
+        {platform.specializations && platform.specializations.length > 0 && (
+          <div className="col-lg-6 mb-4">
+            <h6 className="text-primary mb-3">
+              <i className="bi bi-star-fill me-2"></i>
+              Specializations
+            </h6>
+            <div className="d-flex flex-wrap gap-2">
+              {platform.specializations.map((spec, index) => (
+                <span key={index} className="badge bg-primary">
+                  {spec}
+                </span>
+              ))}
+            </div>
+          </div>
         )}
-        {platform.headquarters && <p>Headquarters: {platform.headquarters}</p>}
+
+        {platform.targetMarkets && platform.targetMarkets.length > 0 && (
+          <div className="col-lg-6 mb-4">
+            <h6 className="text-success mb-3">
+              <i className="bi bi-bullseye me-2"></i>
+              Target Markets
+            </h6>
+            <div className="d-flex flex-wrap gap-2">
+              {platform.targetMarkets.map((market, index) => (
+                <span key={index} className="badge bg-success">
+                  {market}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {platform.notableCustomers && platform.notableCustomers.length > 0 && (
+          <div className="col-lg-6 mb-4">
+            <h6 className="text-warning mb-3">
+              <i className="bi bi-people-fill me-2"></i>
+              Notable Customers
+            </h6>
+            <div className="d-flex flex-wrap gap-2">
+              {platform.notableCustomers.map((customer, index) => (
+                <span key={index} className="badge bg-warning text-dark">
+                  {customer}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {platform.partnerships && platform.partnerships.length > 0 && (
+          <div className="col-lg-6 mb-4">
+            <h6 className="text-info mb-3">
+              <i className="bi bi-handshake me-2"></i>
+              Partnerships
+            </h6>
+            <div className="d-flex flex-wrap gap-2">
+              {platform.partnerships.map((partnership, index) => (
+                <span key={index} className="badge bg-info">
+                  {partnership}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <hr className="my-4" style={{ borderColor: "var(--custom-card-border)" }} />
+
+      <div className="row">
+        <div className="col-md-4 mb-3">
+          <div className="d-flex align-items-center">
+            <i className="bi bi-clock-history text-muted me-2"></i>
+            <div>
+              <small className="text-muted">Last Updated</small>
+              <div className="fw-semibold">{new Date(platform.lastUpdated).toLocaleString()}</div>
+            </div>
+          </div>
+        </div>
+        
+        {platform.foundedDate && (
+          <div className="col-md-4 mb-3">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-calendar-event text-muted me-2"></i>
+              <div>
+                <small className="text-muted">Founded</small>
+                <div className="fw-semibold">{new Date(platform.foundedDate).toLocaleDateString()}</div>
+              </div>
+            </div>
+          </div>
+        )}
+        
+        {platform.headquarters && (
+          <div className="col-md-4 mb-3">
+            <div className="d-flex align-items-center">
+              <i className="bi bi-geo-alt text-muted me-2"></i>
+              <div>
+                <small className="text-muted">Headquarters</small>
+                <div className="fw-semibold">{platform.headquarters}</div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   </div>
