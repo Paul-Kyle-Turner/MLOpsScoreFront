@@ -161,6 +161,8 @@ export interface SupportTier {
 }
 
 export interface PlatformInformation {
+    id?: string; // Optional ID for the platform, useful for updates or deletions
+
     // Basic Platform Information
     platformName: string;
     platformType: PlatformType;

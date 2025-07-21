@@ -1,5 +1,7 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { ThemeToggle } from "../components/theme/ThemeToggle";
+import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
 
 interface BasePageProps {
   children: React.ReactNode;
@@ -8,8 +10,14 @@ interface BasePageProps {
 
 const BasePage: React.FC<BasePageProps> = ({
   children,
-  title = "MLOps Platform Scores",
+  title = "MLOps Community Platform Scores",
 }) => {
+  const navigate = useNavigate();
+
+  const handleHomeClick = () => {
+    navigate("/dashboard");
+  };
+
   return (
     <div>
       <header>
@@ -20,8 +28,33 @@ const BasePage: React.FC<BasePageProps> = ({
             justifyContent: "space-between",
             padding: "1rem",
             position: "relative",
+            borderBottom: "1px solid #e0e0e0",
           }}
         >
+          <div
+            style={{
+              width: "200px",
+              display: "flex",
+              justifyContent: "flex-start",
+              alignItems: "center",
+              gap: "0.5rem",
+            }}
+          >
+            <button
+              onClick={handleHomeClick}
+              style={{
+                background: "transparent",
+                border: "1px solid #ccc",
+                borderRadius: "4px",
+                padding: "0.5rem 1rem",
+                cursor: "pointer",
+                fontSize: "0.9rem",
+              }}
+            >
+              Home
+            </button>
+            <ThemeToggle variant="icon" size="md" />
+          </div>
           <div
             style={{
               position: "absolute",
@@ -34,12 +67,12 @@ const BasePage: React.FC<BasePageProps> = ({
           </div>
           <div
             style={{
-              width: "120px",
+              width: "300px",
               display: "flex",
               justifyContent: "flex-end",
             }}
           >
-            <ThemeToggle variant="icon" size="md" />
+            <SearchBoxLinkOut />
           </div>
         </div>
       </header>

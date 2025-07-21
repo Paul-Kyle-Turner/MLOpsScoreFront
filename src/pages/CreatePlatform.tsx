@@ -13,7 +13,7 @@ import { ComputeInstanceForm } from "../components/forms/ComputeInstanceForm";
 import { ProprietarySoftwareForm } from "../components/forms/ProprietarySoftwareForm";
 import { ProprietaryHardwareForm } from "../components/forms/ProprietaryHardwareForm";
 import { SupportTierForm } from "../components/forms/SupportTierForm";
-import { DidYouMeanPlatform } from "../components/platform";
+import { DidYouMeanPlatformCreate } from "../components/platform";
 import BasePage from "./Base";
 
 export const CreatePlatform = () => {
@@ -400,7 +400,7 @@ export const CreatePlatform = () => {
               )}
 
               {showSuggestions && similarPlatforms.length > 0 && (
-                <DidYouMeanPlatform
+                <DidYouMeanPlatformCreate
                   platforms={similarPlatforms}
                   searchedName={formData.platformName || ""}
                   onDismiss={() => setShowSuggestions(false)}

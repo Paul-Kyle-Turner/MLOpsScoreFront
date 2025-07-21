@@ -4,14 +4,17 @@ import BasePage from "./Base";
 import { PlatformSelector } from "../components/evaluation/PlatformSelector";
 import { EvaluationForm } from "../components/evaluation/EvaluationForm";
 import { EvaluationResults } from "../components/evaluation/EvaluationResults";
-import type { PlatformType } from "../model/platform";
+import type { PlatformType, PlatformInformation } from "../model/platform";
 import type { MLOpsPlatformEvaluation } from "../model/score";
+import { postScores } from "../api/score";
+import { getPlatform } from "../api/platform";
 
 type EvaluationStep = "select" | "evaluate" | "results";
 
 interface SelectedPlatform {
   type: PlatformType;
   name: string;
+  id?: string;
 }
 
 export const Evaluation = () => {
@@ -21,13 +24,21 @@ export const Evaluation = () => {
     useState<SelectedPlatform | null>(null);
   const [completedEvaluation, setCompletedEvaluation] =
     useState<MLOpsPlatformEvaluation | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Check for URL parameters on component mount
   useEffect(() => {
-    const platformName = searchParams.get("platform");
+    const platformId = searchParams.get("platform");
     const platformType = searchParams.get("type");
+    const platformName = searchParams.get("name");
 
-    if (platformName && platformType) {
+    // If we have a platform ID, fetch platform information from backend
+    if (platformId) {
+      fetchPlatformInfo(platformId);
+    }
+    // Fallback to manual parameters if provided
+    else if (platformName && platformType) {
       setSelectedPlatform({
         type: platformType as PlatformType,
         name: platformName,
@@ -36,33 +47,104 @@ export const Evaluation = () => {
     }
   }, [searchParams]);
 
+  const fetchPlatformInfo = async (platformId: string) => {
+    setLoading(true);
+    setError(null);
+    try {
+      const platformInfo: PlatformInformation = await getPlatform(platformId);
+      setSelectedPlatform({
+        type: platformInfo.platformType,
+        name: platformInfo.platformName,
+        id: platformInfo.id,
+      });
+      setCurrentStep("evaluate");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to fetch platform information');
+      console.error('Error fetching platform info:', err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handlePlatformSelected = (
     platformType: PlatformType,
     platformName: string
   ) => {
-    setSelectedPlatform({ type: platformType, name: platformName });
+    setSelectedPlatform({ 
+      type: platformType, 
+      name: platformName 
+      // Note: No ID when manually selected, scores won't be posted
+    });
     setCurrentStep("evaluate");
   };
 
-  const handleEvaluationComplete = (evaluation: MLOpsPlatformEvaluation) => {
+  const handleEvaluationComplete = async (
+    evaluation: MLOpsPlatformEvaluation
+  ) => {
     setCompletedEvaluation(evaluation);
     setCurrentStep("results");
-    // send evaluation to backend if needed
-    // Example: await submitEvaluation(evaluation);
+    
+    // Only post scores if we have a platform ID
+    if (selectedPlatform?.id) {
+      try {
+        await postScores(selectedPlatform.id, evaluation);
+      } catch (err) {
+        console.error('Error posting scores:', err);
+        // Could show a toast or error message here, but don't block the user
+      }
+    }
   };
 
   const handleCancel = () => {
     setSelectedPlatform(null);
+    setError(null);
     setCurrentStep("select");
   };
 
   const handleStartNew = () => {
     setSelectedPlatform(null);
     setCompletedEvaluation(null);
+    setError(null);
     setCurrentStep("select");
   };
 
   const renderContent = () => {
+    // Show loading state while fetching platform info
+    if (loading) {
+      return (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <div>Loading platform information...</div>
+        </div>
+      );
+    }
+
+    // Show error state if fetching failed
+    if (error) {
+      return (
+        <div style={{ textAlign: 'center', padding: '40px' }}>
+          <div style={{ color: 'red', marginBottom: '20px' }}>
+            Error: {error}
+          </div>
+          <button
+            onClick={() => {
+              setError(null);
+              setCurrentStep("select");
+            }}
+            style={{
+              padding: '10px 20px',
+              backgroundColor: '#007bff',
+              color: 'white',
+              border: 'none',
+              borderRadius: '4px',
+              cursor: 'pointer'
+            }}
+          >
+            Start Over
+          </button>
+        </div>
+      );
+    }
+
     switch (currentStep) {
       case "select":
         return <PlatformSelector onPlatformSelected={handlePlatformSelected} />;
@@ -108,7 +190,7 @@ export const Evaluation = () => {
               marginBottom: "40px",
             }}
           >
-            <h1 style={{ marginBottom: "10px" }}>MLOps Platform Evaluation</h1>
+            <h1 style={{ marginBottom: "10px" }}>Platform Evaluation</h1>
             <p
               style={{
                 fontSize: "18px",
