@@ -1,19 +1,15 @@
-import { searchPlatform } from "../../api/search";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const SearchBox = () => {
+export const SearchBoxLinkOut = () => {
   const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
-  const handleSearch = async () => {
+  const handleSearch = () => {
     if (!query.trim()) return;
 
-    try {
-      const results = await searchPlatform(query, 1, 10);
-      console.log("Search results:", results);
-      // Handle the results (e.g., update state or display results)
-    } catch (error) {
-      console.error("Error during search:", error);
-    }
+    // Navigate to the search results page
+    navigate(`/platforms/search/${encodeURIComponent(query.trim())}`);
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

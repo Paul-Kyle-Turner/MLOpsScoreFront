@@ -1,20 +1,30 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Root from "../pages/Root";
 import { Dashboard } from "../pages/Dashboard";
-// import { SlackCallback } from "../components/slackCallback/SlackCallback";
+import { CreatePlatform } from "../pages/CreatePlatform";
+import { Evaluation } from "../pages/Evaluation";
+import PlatformsSearch from "../pages/PlatformsSearch";
 
 const router = createBrowserRouter([
   {
     path: "/",
     element: <Root />,
   },
-  // {
-  //   path: "/auth/slack/callback",
-  //   element: <SlackCallback />,
-  // },
   {
     path: "/dashboard",
     element: <Dashboard />,
+  },
+  {
+    path: "/evaluation",
+    element: <Evaluation />,
+  },
+  {
+    path: "/create/platform",
+    element: <CreatePlatform />,
+  },
+  {
+    path: "/platforms/search/:query",
+    element: <PlatformsSearch />,
   },
 ]);
 

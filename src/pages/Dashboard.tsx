@@ -1,3 +1,6 @@
+import { Link } from "react-router";
+import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
+
 export const Dashboard = () => {
   return (
     <div
@@ -13,38 +16,29 @@ export const Dashboard = () => {
     >
       <h1>MLOps Platform Score Dashboard</h1>
       <p>Welcome! You are now authenticated with Slack.</p>
-      
-      <div style={{ marginTop: "40px" }}>
-        <h2>What would you like to do?</h2>
-        <div style={{ display: "flex", gap: "20px", marginTop: "20px" }}>
-          <button
-            style={{
-              padding: "12px 24px",
-              backgroundColor: "#36c5f0",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "16px",
-            }}
-          >
-            Score Platforms
-          </button>
-          <button
-            style={{
-              padding: "12px 24px",
-              backgroundColor: "#2eb67d",
-              color: "white",
-              border: "none",
-              borderRadius: "4px",
-              cursor: "pointer",
-              fontSize: "16px",
-            }}
-          >
-            View Scores
-          </button>
-        </div>
-      </div>
+
+      {/* Search box */}
+      <SearchBoxLinkOut />
+      <br />
+      <p>If you have used an MLOps platform before, you can give it a score.</p>
+      <br />
+
+      {/* Add your evaluation button */}
+      <Link to={"/evaluation"}>
+        <button
+          style={{
+            padding: "12px 24px",
+            backgroundColor: "#36c5f0",
+            color: "white",
+            border: "none",
+            borderRadius: "4px",
+            cursor: "pointer",
+            fontSize: "16px",
+          }}
+        >
+          Start Evaluation
+        </button>
+      </Link>
     </div>
   );
 };
