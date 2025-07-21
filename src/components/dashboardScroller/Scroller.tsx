@@ -20,8 +20,17 @@ export const Scroller: React.FC<ScrollerProps> = ({
   const [currentPage, setCurrentPage] = useState(1);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [autoScrollPaused, setAutoScrollPaused] = useState(false);
 
   const scrollContainerRef = React.useRef<HTMLDivElement>(null);
+  const autoScrollIntervalRef = React.useRef<number | null>(null);
+
+  const pauseAutoScrollTemporarily = () => {
+    setAutoScrollPaused(true);
+    setTimeout(() => {
+      setAutoScrollPaused(false);
+    }, 3000); // Resume auto-scroll after 3 seconds
+  };
 
   // Load platforms
   useEffect(() => {
@@ -66,7 +75,43 @@ export const Scroller: React.FC<ScrollerProps> = ({
     }
   }, [platforms]);
 
+  // Start auto-scroll when component mounts and platforms are loaded
+  useEffect(() => {
+    if (platforms.length > 0 && !loading) {
+      if (autoScrollIntervalRef.current) return;
+
+      autoScrollIntervalRef.current = window.setInterval(() => {
+        if (scrollContainerRef.current && !autoScrollPaused) {
+          const { scrollLeft, scrollWidth, clientWidth } =
+            scrollContainerRef.current;
+
+          // If we've reached the end, reset to beginning
+          if (scrollLeft >= scrollWidth - clientWidth - 1) {
+            scrollContainerRef.current.scrollTo({
+              left: 0,
+              behavior: "smooth",
+            });
+          } else {
+            // Scroll slowly to the right
+            scrollContainerRef.current.scrollBy({
+              left: 1,
+              behavior: "auto",
+            });
+          }
+        }
+      }, 50); // Adjust speed by changing interval (50ms = slow scroll)
+    }
+
+    return () => {
+      if (autoScrollIntervalRef.current) {
+        clearInterval(autoScrollIntervalRef.current);
+        autoScrollIntervalRef.current = null;
+      }
+    };
+  }, [platforms, loading, autoScrollPaused]);
+
   const scrollLeft = () => {
+    pauseAutoScrollTemporarily();
     if (scrollContainerRef.current) {
       const cardWidth = 320; // Approximate card width + gap
       const scrollAmount = Math.min(
@@ -81,6 +126,7 @@ export const Scroller: React.FC<ScrollerProps> = ({
   };
 
   const scrollRight = () => {
+    pauseAutoScrollTemporarily();
     if (scrollContainerRef.current) {
       const cardWidth = 320; // Approximate card width + gap
       const scrollAmount = Math.min(
@@ -163,6 +209,8 @@ export const Scroller: React.FC<ScrollerProps> = ({
           <div
             ref={scrollContainerRef}
             className="d-flex gap-3 overflow-auto pb-3"
+            onMouseEnter={() => setAutoScrollPaused(true)}
+            onMouseLeave={() => setAutoScrollPaused(false)}
             style={{
               scrollBehavior: "smooth",
               WebkitScrollSnapType: "x mandatory",
@@ -214,6 +262,7 @@ export const Scroller: React.FC<ScrollerProps> = ({
       <style
         dangerouslySetInnerHTML={{
           __html: `
+          /* Auto-scroll container styling */
           .overflow-auto::-webkit-scrollbar {
             height: 8px;
           }
@@ -246,12 +295,6 @@ export const Scroller: React.FC<ScrollerProps> = ({
             .overflow-auto::-webkit-scrollbar {
               height: 6px !important;
             }
-          }
-
-          /* Hover effect for platform cards in scroller */
-          .flex-shrink-0:hover {
-            transform: translateY(-2px);
-            transition: transform 0.2s ease;
           }
         `,
         }}
