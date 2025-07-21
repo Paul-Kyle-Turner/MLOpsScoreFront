@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { getPlatformByName } from "../api/platform";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import { getPlatformByName, getPlatform } from "../api/platform";
+import { EvaluateButton } from "../components/evaluateButton/EvaluateButton";
 import BasePage from "./Base";
 import type {
   PlatformInformation,
@@ -12,6 +13,7 @@ import type {
 
 const Platform: React.FC = () => {
   const { platformName } = useParams<{ platformName: string }>();
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const [platform, setPlatform] = useState<PlatformInformation | null>(null);
   const [loading, setLoading] = useState(true);
@@ -19,38 +21,63 @@ const Platform: React.FC = () => {
 
   useEffect(() => {
     const fetchPlatform = async () => {
-      if (!platformName) {
-        setError("Platform name is required");
-        setLoading(false);
-        return;
-      }
+      // Check for platform ID in search params first
+      const platformId = searchParams.get("id");
 
-      try {
-        setLoading(true);
-        const platformData = await getPlatformByName(platformName);
-        setPlatform(platformData);
-      } catch (err) {
-        setError(
-          err instanceof Error ? err.message : "Failed to fetch platform"
-        );
-      } finally {
+      if (platformId) {
+        // Fetch by ID if provided
+        try {
+          setLoading(true);
+          setError(null);
+          const platformData = await getPlatform(platformId);
+          setPlatform(platformData);
+        } catch (err) {
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch platform"
+          );
+        } finally {
+          setLoading(false);
+        }
+      } else if (platformName) {
+        // Fallback to fetching by name for backward compatibility
+        try {
+          setLoading(true);
+          setError(null);
+          const platformData = await getPlatformByName(platformName);
+          setPlatform(platformData);
+        } catch (err) {
+          setError(
+            err instanceof Error ? err.message : "Failed to fetch platform"
+          );
+        } finally {
+          setLoading(false);
+        }
+      } else {
+        setError("Platform ID or name is required");
         setLoading(false);
       }
     };
 
     fetchPlatform();
-  }, [platformName]);
+  }, [platformName, searchParams]);
 
   if (loading) {
     return (
       <BasePage title="Loading Platform...">
-        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "400px" }}>
+        <div
+          className="d-flex justify-content-center align-items-center"
+          style={{ minHeight: "400px" }}
+        >
           <div className="text-center">
             <div className="spinner-border text-primary mb-3" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-            <h4 style={{ color: "var(--bs-body-color)" }}>Loading Platform Information...</h4>
-            <p className="text-muted">Please wait while we fetch the details.</p>
+            <h4 style={{ color: "var(--bs-body-color)" }}>
+              Loading Platform Information...
+            </h4>
+            <p className="text-muted">
+              Please wait while we fetch the details.
+            </p>
           </div>
         </div>
       </BasePage>
@@ -70,8 +97,8 @@ const Platform: React.FC = () => {
                     Error
                   </h1>
                   <p className="card-text text-danger">{error}</p>
-                  <button 
-                    className="btn btn-primary" 
+                  <button
+                    className="btn btn-primary"
                     onClick={() => navigate("/")}
                   >
                     Go Home
@@ -97,9 +124,12 @@ const Platform: React.FC = () => {
                     <i className="bi bi-search me-2"></i>
                     Platform Not Found
                   </h1>
-                  <p className="card-text">The platform you're looking for doesn't exist or has been removed.</p>
-                  <button 
-                    className="btn btn-primary" 
+                  <p className="card-text">
+                    The platform you're looking for doesn't exist or has been
+                    removed.
+                  </p>
+                  <button
+                    className="btn btn-primary"
                     onClick={() => navigate("/")}
                   >
                     Go Home
@@ -116,24 +146,23 @@ const Platform: React.FC = () => {
   return (
     <BasePage title={platform.platformName}>
       <div className="container-fluid px-4 py-3">
-        {/* Back Button */}
-        <button 
-          className="btn btn-outline-secondary mb-4" 
-          onClick={() => navigate(-1)}
-        >
-          <i className="bi bi-arrow-left me-2"></i>
-          Back
-        </button>
-
         {/* Platform Header */}
-        <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+        <div
+          className="card mb-4 border-0 shadow-sm"
+          style={{ backgroundColor: "var(--custom-card-bg)" }}
+        >
           <div className="card-body">
             <div className="row align-items-center">
               <div className="col-md-8">
-                <h1 className="display-5 fw-bold mb-2" style={{ color: "var(--bs-body-color)" }}>
+                <h1
+                  className="display-5 fw-bold mb-2"
+                  style={{ color: "var(--bs-body-color)" }}
+                >
                   {platform.platformName}
                 </h1>
-                <span className="badge bg-primary fs-6 mb-3">{platform.platformType}</span>
+                <span className="badge bg-primary fs-6 mb-3">
+                  {platform.platformType}
+                </span>
                 {platform.parentCompany && (
                   <p className="lead text-muted mb-3">
                     <i className="bi bi-building me-2"></i>
@@ -143,6 +172,12 @@ const Platform: React.FC = () => {
               </div>
               <div className="col-md-4 text-md-end">
                 <div className="d-flex flex-column gap-2">
+                  <EvaluateButton
+                    platform={platform}
+                    variant="success"
+                    size="lg"
+                    className="fw-bold"
+                  />
                   {platform.websiteUrl && (
                     <a
                       href={platform.websiteUrl}
@@ -174,37 +209,57 @@ const Platform: React.FC = () => {
         {/* Key Metrics */}
         <div className="row mb-4">
           <div className="col-md-3 col-sm-6 mb-3">
-            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+            <div
+              className="card h-100 text-center border-0 shadow-sm hover-shadow-lg"
+              style={{ backgroundColor: "var(--custom-card-bg)" }}
+            >
               <div className="card-body">
                 <i className="bi bi-geo-alt-fill text-primary fs-1 mb-2"></i>
-                <h3 className="fw-bold text-primary">{platform.regions.length}</h3>
+                <h3 className="fw-bold text-primary">
+                  {platform.regions.length}
+                </h3>
                 <p className="text-muted mb-0">Regions</p>
               </div>
             </div>
           </div>
           <div className="col-md-3 col-sm-6 mb-3">
-            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+            <div
+              className="card h-100 text-center border-0 shadow-sm hover-shadow-lg"
+              style={{ backgroundColor: "var(--custom-card-bg)" }}
+            >
               <div className="card-body">
                 <i className="bi bi-cpu-fill text-success fs-1 mb-2"></i>
-                <h3 className="fw-bold text-success">{platform.computeInstances.length}</h3>
+                <h3 className="fw-bold text-success">
+                  {platform.computeInstances.length}
+                </h3>
                 <p className="text-muted mb-0">Instance Types</p>
               </div>
             </div>
           </div>
           <div className="col-md-3 col-sm-6 mb-3">
-            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+            <div
+              className="card h-100 text-center border-0 shadow-sm hover-shadow-lg"
+              style={{ backgroundColor: "var(--custom-card-bg)" }}
+            >
               <div className="card-body">
                 <i className="bi bi-shield-check text-info fs-1 mb-2"></i>
-                <h3 className="fw-bold text-info">{platform.slaUptime ? `${platform.slaUptime}%` : "N/A"}</h3>
+                <h3 className="fw-bold text-info">
+                  {platform.slaUptime ? `${platform.slaUptime}%` : "N/A"}
+                </h3>
                 <p className="text-muted mb-0">SLA Uptime</p>
               </div>
             </div>
           </div>
           <div className="col-md-3 col-sm-6 mb-3">
-            <div className="card h-100 text-center border-0 shadow-sm hover-shadow-lg" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+            <div
+              className="card h-100 text-center border-0 shadow-sm hover-shadow-lg"
+              style={{ backgroundColor: "var(--custom-card-bg)" }}
+            >
               <div className="card-body">
                 <i className="bi bi-headset text-warning fs-1 mb-2"></i>
-                <h3 className="fw-bold text-warning">{platform.supportTiers.length}</h3>
+                <h3 className="fw-bold text-warning">
+                  {platform.supportTiers.length}
+                </h3>
                 <p className="text-muted mb-0">Support Tiers</p>
               </div>
             </div>
@@ -237,7 +292,10 @@ const Platform: React.FC = () => {
 const RegionsSection: React.FC<{ regions: PlatformInformation["regions"] }> = ({
   regions,
 }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-geo-alt-fill text-primary me-3"></i>
@@ -248,7 +306,13 @@ const RegionsSection: React.FC<{ regions: PlatformInformation["regions"] }> = ({
       <div className="row">
         {regions.map((region, index) => (
           <div key={index} className="col-lg-4 col-md-6 mb-4">
-            <div className="card h-100 border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+            <div
+              className="card h-100 border-1 hover-shadow-lg"
+              style={{
+                backgroundColor: "var(--bs-secondary-bg)",
+                borderColor: "var(--custom-card-border)",
+              }}
+            >
               <div className="card-body">
                 <h5 className="card-title fw-bold text-primary">
                   <i className="bi bi-pin-map me-2"></i>
@@ -258,21 +322,29 @@ const RegionsSection: React.FC<{ regions: PlatformInformation["regions"] }> = ({
                   {region.regionCode && (
                     <div className="col-6">
                       <span className="text-muted">Code:</span>
-                      <span className="fw-semibold ms-1">{region.regionCode}</span>
+                      <span className="fw-semibold ms-1">
+                        {region.regionCode}
+                      </span>
                     </div>
                   )}
                   <div className="col-6">
                     <span className="text-muted">Country:</span>
-                    <span className="fw-semibold ms-1">{region.countryCode}</span>
+                    <span className="fw-semibold ms-1">
+                      {region.countryCode}
+                    </span>
                   </div>
                   <div className="col-6">
                     <span className="text-muted">Tier:</span>
-                    <span className="badge bg-info ms-1">{region.datacenterTier}</span>
+                    <span className="badge bg-info ms-1">
+                      {region.datacenterTier}
+                    </span>
                   </div>
                   {region.availabilityZones && (
                     <div className="col-6">
                       <span className="text-muted">AZs:</span>
-                      <span className="fw-semibold ms-1">{region.availabilityZones}</span>
+                      <span className="fw-semibold ms-1">
+                        {region.availabilityZones}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -296,7 +368,10 @@ const RegionsSection: React.FC<{ regions: PlatformInformation["regions"] }> = ({
 const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
   instances,
 }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-cpu-fill text-success me-3"></i>
@@ -305,7 +380,10 @@ const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
     </div>
     <div className="card-body p-0">
       <div className="table-responsive">
-        <table className="table table-hover mb-0" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+        <table
+          className="table table-hover mb-0"
+          style={{ backgroundColor: "var(--custom-card-bg)" }}
+        >
           <thead style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
             <tr>
               <th className="border-0 fw-bold">Instance</th>
@@ -325,15 +403,24 @@ const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
               );
 
               return (
-                <tr key={index} style={{ borderColor: "var(--custom-card-border)" }}>
+                <tr
+                  key={index}
+                  style={{ borderColor: "var(--custom-card-border)" }}
+                >
                   <td className="border-0">
-                    <div className="fw-bold text-primary">{instance.instanceName}</div>
+                    <div className="fw-bold text-primary">
+                      {instance.instanceName}
+                    </div>
                     {instance.instanceFamily && (
-                      <small className="text-muted">{instance.instanceFamily}</small>
+                      <small className="text-muted">
+                        {instance.instanceFamily}
+                      </small>
                     )}
                   </td>
                   <td className="border-0 text-center">
-                    <span className="badge bg-light text-dark">{instance.vcpus}</span>
+                    <span className="badge bg-light text-dark">
+                      {instance.vcpus}
+                    </span>
                   </td>
                   <td className="border-0 text-center">
                     <span className="fw-semibold">{instance.memoryGb} GB</span>
@@ -343,7 +430,9 @@ const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
                       {instance.storageGb ? `${instance.storageGb} GB` : "N/A"}
                       {instance.storageType && (
                         <div>
-                          <small className="text-muted">{instance.storageType}</small>
+                          <small className="text-muted">
+                            {instance.storageType}
+                          </small>
                         </div>
                       )}
                     </div>
@@ -355,7 +444,9 @@ const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
                           {instance.gpuCount}x {instance.gpuType || "GPU"}
                         </div>
                         {instance.gpuMemoryGb && (
-                          <small className="text-muted">{instance.gpuMemoryGb} GB</small>
+                          <small className="text-muted">
+                            {instance.gpuMemoryGb} GB
+                          </small>
                         )}
                       </div>
                     ) : (
@@ -364,7 +455,9 @@ const ComputeInstancesSection: React.FC<{ instances: ComputeInstance[] }> = ({
                   </td>
                   <td className="border-0 text-center">
                     {!isNaN(minPrice) ? (
-                      <span className="fw-bold text-success">${minPrice.toFixed(2)}/hr</span>
+                      <span className="fw-bold text-success">
+                        ${minPrice.toFixed(2)}/hr
+                      </span>
                     ) : (
                       <span className="text-muted">Contact</span>
                     )}
@@ -383,7 +476,10 @@ const SecurityComplianceSection: React.FC<{
   security: PlatformInformation["securityFeatures"];
   compliance: PlatformInformation["complianceCertifications"];
 }> = ({ security, compliance }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-shield-check text-info me-3"></i>
@@ -400,9 +496,18 @@ const SecurityComplianceSection: React.FC<{
           <div className="row g-2">
             {Object.entries(security).map(([key, value]) => (
               <div key={key} className="col-sm-6">
-                <div className="d-flex align-items-center p-2 rounded" style={{ backgroundColor: "var(--bs-secondary-bg)" }}>
-                  <span className={`me-2 ${value ? "text-success" : "text-danger"}`}>
-                    <i className={`bi ${value ? "bi-check-circle-fill" : "bi-x-circle-fill"}`}></i>
+                <div
+                  className="d-flex align-items-center p-2 rounded"
+                  style={{ backgroundColor: "var(--bs-secondary-bg)" }}
+                >
+                  <span
+                    className={`me-2 ${value ? "text-success" : "text-danger"}`}
+                  >
+                    <i
+                      className={`bi ${
+                        value ? "bi-check-circle-fill" : "bi-x-circle-fill"
+                      }`}
+                    ></i>
                   </span>
                   <span className="small">
                     {key.replace(/([A-Z])/g, " $1").trim()}
@@ -421,7 +526,13 @@ const SecurityComplianceSection: React.FC<{
           <div className="row g-3">
             {compliance.map((cert, index) => (
               <div key={index} className="col-12">
-                <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                <div
+                  className="card border-1 hover-shadow-lg"
+                  style={{
+                    backgroundColor: "var(--bs-secondary-bg)",
+                    borderColor: "var(--custom-card-border)",
+                  }}
+                >
                   <div className="card-body p-3">
                     <div className="d-flex justify-content-between align-items-start">
                       <div>
@@ -437,11 +548,24 @@ const SecurityComplianceSection: React.FC<{
                         {cert.certificationDate && (
                           <p className="small text-muted mb-0">
                             <i className="bi bi-calendar-check me-1"></i>
-                            Certified: {new Date(cert.certificationDate).toLocaleDateString()}
+                            Certified:{" "}
+                            {new Date(
+                              cert.certificationDate
+                            ).toLocaleDateString()}
                           </p>
                         )}
                       </div>
-                      <span className={`badge ${cert.status === 'Certified' ? 'bg-success' : cert.status === 'In Progress' ? 'bg-warning' : cert.status === 'Planned' ? 'bg-info' : 'bg-secondary'}`}>
+                      <span
+                        className={`badge ${
+                          cert.status === "Certified"
+                            ? "bg-success"
+                            : cert.status === "In Progress"
+                            ? "bg-warning"
+                            : cert.status === "Planned"
+                            ? "bg-info"
+                            : "bg-secondary"
+                        }`}
+                      >
                         {cert.status}
                       </span>
                     </div>
@@ -460,7 +584,10 @@ const ProprietaryTechSection: React.FC<{
   software: ProprietarySoftware[];
   hardware: ProprietaryHardware[];
 }> = ({ software, hardware }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-gear-fill text-warning me-3"></i>
@@ -478,22 +605,40 @@ const ProprietaryTechSection: React.FC<{
             <div className="row g-3">
               {software.map((sw, index) => (
                 <div key={index} className="col-12">
-                  <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                  <div
+                    className="card border-1 hover-shadow-lg"
+                    style={{
+                      backgroundColor: "var(--bs-secondary-bg)",
+                      borderColor: "var(--custom-card-border)",
+                    }}
+                  >
                     <div className="card-body p-3">
                       <div className="d-flex justify-content-between align-items-start mb-2">
-                        <h6 className="card-title mb-1 fw-bold">{sw.softwareName}</h6>
-                        <span className={`badge ${sw.openSource ? 'bg-success' : 'bg-warning'}`}>
+                        <h6 className="card-title mb-1 fw-bold">
+                          {sw.softwareName}
+                        </h6>
+                        <span
+                          className={`badge ${
+                            sw.openSource ? "bg-success" : "bg-warning"
+                          }`}
+                        >
                           {sw.openSource ? "Open Source" : "Proprietary"}
                         </span>
                       </div>
-                      <p className="card-text small text-muted mb-2">{sw.description}</p>
+                      <p className="card-text small text-muted mb-2">
+                        {sw.description}
+                      </p>
                       <div className="small">
                         <span className="text-muted">Type:</span>
-                        <span className="fw-semibold ms-1">{sw.softwareType}</span>
+                        <span className="fw-semibold ms-1">
+                          {sw.softwareType}
+                        </span>
                         {sw.version && (
                           <>
                             <span className="text-muted ms-3">Version:</span>
-                            <span className="fw-semibold ms-1">{sw.version}</span>
+                            <span className="fw-semibold ms-1">
+                              {sw.version}
+                            </span>
                           </>
                         )}
                       </div>
@@ -514,23 +659,39 @@ const ProprietaryTechSection: React.FC<{
             <div className="row g-3">
               {hardware.map((hw, index) => (
                 <div key={index} className="col-12">
-                  <div className="card border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+                  <div
+                    className="card border-1 hover-shadow-lg"
+                    style={{
+                      backgroundColor: "var(--bs-secondary-bg)",
+                      borderColor: "var(--custom-card-border)",
+                    }}
+                  >
                     <div className="card-body p-3">
-                      <h6 className="card-title mb-1 fw-bold text-success">{hw.hardwareName}</h6>
-                      <p className="card-text small text-muted mb-2">{hw.description}</p>
+                      <h6 className="card-title mb-1 fw-bold text-success">
+                        {hw.hardwareName}
+                      </h6>
+                      <p className="card-text small text-muted mb-2">
+                        {hw.description}
+                      </p>
                       <div className="small">
                         <span className="text-muted">Type:</span>
-                        <span className="fw-semibold ms-1">{hw.hardwareType}</span>
+                        <span className="fw-semibold ms-1">
+                          {hw.hardwareType}
+                        </span>
                         {hw.generation && (
                           <>
                             <span className="text-muted ms-3">Generation:</span>
-                            <span className="fw-semibold ms-1">{hw.generation}</span>
+                            <span className="fw-semibold ms-1">
+                              {hw.generation}
+                            </span>
                           </>
                         )}
                         {hw.manufacturingPartner && (
                           <>
                             <span className="text-muted ms-3">Partner:</span>
-                            <span className="fw-semibold ms-1">{hw.manufacturingPartner}</span>
+                            <span className="fw-semibold ms-1">
+                              {hw.manufacturingPartner}
+                            </span>
                           </>
                         )}
                       </div>
@@ -549,7 +710,10 @@ const ProprietaryTechSection: React.FC<{
 const SupportSection: React.FC<{ supportTiers: SupportTier[] }> = ({
   supportTiers,
 }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-headset text-info me-3"></i>
@@ -560,28 +724,36 @@ const SupportSection: React.FC<{ supportTiers: SupportTier[] }> = ({
       <div className="row">
         {supportTiers.map((tier, index) => (
           <div key={index} className="col-lg-4 col-md-6 mb-4">
-            <div className="card h-100 border-1 hover-shadow-lg" style={{ backgroundColor: "var(--bs-secondary-bg)", borderColor: "var(--custom-card-border)" }}>
+            <div
+              className="card h-100 border-1 hover-shadow-lg"
+              style={{
+                backgroundColor: "var(--bs-secondary-bg)",
+                borderColor: "var(--custom-card-border)",
+              }}
+            >
               <div className="card-body">
                 <h5 className="card-title fw-bold text-primary mb-3">
                   <i className="bi bi-award-fill me-2"></i>
                   {tier.tierName}
                 </h5>
-                
+
                 <div className="mb-3">
                   {tier.averageResponseTime && (
                     <div className="d-flex align-items-center mb-2">
                       <i className="bi bi-clock text-warning me-2"></i>
                       <span className="small">Response Time:</span>
-                      <span className="fw-semibold ms-1">{tier.averageResponseTime}</span>
+                      <span className="fw-semibold ms-1">
+                        {tier.averageResponseTime}
+                      </span>
                     </div>
                   )}
-                  
+
                   <div className="d-flex align-items-center mb-2">
                     <i className="bi bi-calendar-range text-info me-2"></i>
                     <span className="small">Hours:</span>
                     <span className="fw-semibold ms-1">{tier.hours}</span>
                   </div>
-                  
+
                   {tier.price && (
                     <div className="d-flex align-items-center mb-3">
                       <i className="bi bi-currency-dollar text-success me-2"></i>
@@ -597,7 +769,10 @@ const SupportSection: React.FC<{ supportTiers: SupportTier[] }> = ({
                   </h6>
                   <div className="d-flex flex-wrap gap-1">
                     {tier.channels.map((channel, i) => (
-                      <span key={i} className="badge bg-outline-secondary border small">
+                      <span
+                        key={i}
+                        className="badge bg-outline-secondary border small"
+                      >
                         {channel}
                       </span>
                     ))}
@@ -615,7 +790,10 @@ const SupportSection: React.FC<{ supportTiers: SupportTier[] }> = ({
 const AdditionalInfoSection: React.FC<{ platform: PlatformInformation }> = ({
   platform,
 }) => (
-  <div className="card mb-4 border-0 shadow-sm" style={{ backgroundColor: "var(--custom-card-bg)" }}>
+  <div
+    className="card mb-4 border-0 shadow-sm"
+    style={{ backgroundColor: "var(--custom-card-bg)" }}
+  >
     <div className="card-header bg-transparent border-0 py-3">
       <h2 className="mb-0" style={{ color: "var(--bs-body-color)" }}>
         <i className="bi bi-info-circle-fill text-primary me-3"></i>
@@ -689,7 +867,10 @@ const AdditionalInfoSection: React.FC<{ platform: PlatformInformation }> = ({
         )}
       </div>
 
-      <hr className="my-4" style={{ borderColor: "var(--custom-card-border)" }} />
+      <hr
+        className="my-4"
+        style={{ borderColor: "var(--custom-card-border)" }}
+      />
 
       <div className="row">
         <div className="col-md-4 mb-3">
@@ -697,23 +878,27 @@ const AdditionalInfoSection: React.FC<{ platform: PlatformInformation }> = ({
             <i className="bi bi-clock-history text-muted me-2"></i>
             <div>
               <small className="text-muted">Last Updated</small>
-              <div className="fw-semibold">{new Date(platform.lastUpdated).toLocaleString()}</div>
+              <div className="fw-semibold">
+                {new Date(platform.lastUpdated).toLocaleString()}
+              </div>
             </div>
           </div>
         </div>
-        
+
         {platform.foundedDate && (
           <div className="col-md-4 mb-3">
             <div className="d-flex align-items-center">
               <i className="bi bi-calendar-event text-muted me-2"></i>
               <div>
                 <small className="text-muted">Founded</small>
-                <div className="fw-semibold">{new Date(platform.foundedDate).toLocaleDateString()}</div>
+                <div className="fw-semibold">
+                  {new Date(platform.foundedDate).toLocaleDateString()}
+                </div>
               </div>
             </div>
           </div>
         )}
-        
+
         {platform.headquarters && (
           <div className="col-md-4 mb-3">
             <div className="d-flex align-items-center">
