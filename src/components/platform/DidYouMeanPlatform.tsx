@@ -61,7 +61,8 @@ export const DidYouMeanPlatform: React.FC<DidYouMeanPlatformProps> = ({
               fontSize: "14px",
             }}
           >
-            We found {platforms.length} similar platform{platforms.length > 1 ? "s" : ""} to "{searchedName}":
+            We found {platforms.length} similar platform
+            {platforms.length > 1 ? "s" : ""} to "{searchedName}":
           </p>
         </div>
         <button
@@ -150,7 +151,7 @@ export const DidYouMeanPlatform: React.FC<DidYouMeanPlatformProps> = ({
             </div>
           </div>
         ))}
-        
+
         {platforms.length > 3 && (
           <div
             style={{
@@ -160,7 +161,8 @@ export const DidYouMeanPlatform: React.FC<DidYouMeanPlatformProps> = ({
               fontSize: "14px",
             }}
           >
-            and {platforms.length - 3} more platform{platforms.length - 3 > 1 ? "s" : ""}...
+            and {platforms.length - 3} more platform
+            {platforms.length - 3 > 1 ? "s" : ""}...
           </div>
         )}
       </div>
@@ -175,7 +177,8 @@ export const DidYouMeanPlatform: React.FC<DidYouMeanPlatformProps> = ({
           color: "#6c757d",
         }}
       >
-        💡 If none of these match what you're looking for, you can continue creating a new platform entry.
+        💡 If none of these match what you're looking for, you can continue
+        creating a new platform entry.
       </div>
     </div>
   );

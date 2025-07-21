@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { Search } from "lucide-react";
 import type { PlatformInformation } from "../model/platform";
 import { searchPlatform } from "../api/search";
 import { PlatformCard } from "../components/platform/PlatformCard";
@@ -102,28 +101,34 @@ const PlatformsSearch: React.FC = () => {
 
   return (
     <BasePage title="MLOps Platforms">
-      <div>
+      <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
-        <header>
-          <h1>MLOps Platforms</h1>
+        <header className="text-center mb-6">
           <p>Discover and compare MLOps platforms for your projects</p>
         </header>
 
         {/* Search and Filters */}
-        <div>
-          <Search />
-          <input
-            type="text"
-            placeholder="Search platforms, features, or categories..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                handleSearch();
-              }
-            }}
-          />
-          <button onClick={handleSearch}>Search</button>
+        <div className="flex text-center mb-6">
+          <div className="flex items-center gap-2">
+            <input
+              type="text"
+              placeholder="Search platforms, features, or categories..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  handleSearch();
+                }
+              }}
+              className="px-4 py-2 border rounded-lg"
+            />
+            <button
+              onClick={handleSearch}
+              className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+            >
+              Search
+            </button>
+          </div>
         </div>
 
         {/* Results Header */}
@@ -149,6 +154,7 @@ const PlatformsSearch: React.FC = () => {
                 platform={platform}
               />
             ))}
+            <br />
             <DontSeeYourPlatform />
           </div>
         )}

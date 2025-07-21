@@ -50,8 +50,10 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
     }
   };
 
+  console.log("Platform Card Rendered", platform);
+
   return (
-    <Card>
+    <Card style={{ maxWidth: "300px", maxHeight: "400px" }} className="h-100">
       <Card.Header className="bg-light border-0 pb-2">
         <div className="d-flex justify-content-between align-items-start">
           <div>
@@ -74,7 +76,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
         </div>
       </Card.Header>
 
-      <Card.Body className="pt-3">
+      <Card.Body className="pt-3" style={{ overflowY: "auto", flex: "1" }}>
         {/* Key Metrics Row */}
         <Row className="mb-3">
           <Col xs={6} className="border-end">
@@ -103,25 +105,33 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
         </Row>
 
         {/* Pricing and SLA */}
-        {(minPrice !== null && !isNaN(minPrice)) || platform.slaUptime ? (
+        {(minPrice !== null && !isNaN(minPrice)) ||
+        (platform.slaUptime && platform.slaUptime > 0) ? (
           <Row className="mb-3">
             {minPrice !== null && !isNaN(minPrice) && (
-              <Col xs={6} className={platform.slaUptime ? "border-end" : ""}>
+              <Col
+                xs={6}
+                className={
+                  platform.slaUptime && platform.slaUptime > 0
+                    ? "border-end"
+                    : ""
+                }
+              >
                 <div className="text-center">
                   <DollarSign size={16} className="text-warning mb-1" />
                   <div className="fw-semibold text-warning">
-                    ${minPrice.toFixed(2)}
+                    Min Price : ${minPrice.toFixed(2)}
                   </div>
                   <small className="text-muted">Starting /hr</small>
                 </div>
               </Col>
             )}
-            {platform.slaUptime && (
+            {platform.slaUptime && platform.slaUptime > 0 && (
               <Col xs={minPrice !== null && !isNaN(minPrice) ? 6 : 12}>
                 <div className="text-center">
                   <Shield size={16} className="text-info mb-1" />
                   <div className="fw-semibold text-info">
-                    {platform.slaUptime}%
+                    SLA {platform.slaUptime}%
                   </div>
                   <small className="text-muted">SLA Uptime</small>
                 </div>
@@ -150,12 +160,13 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
               Encrypted
             </Badge>
           )}
-          {platform.edgeLocations && platform.edgeLocations > 0 && (
-            <Badge bg="info" className="me-2 mb-1">
-              <Zap size={12} className="me-1" />
-              Edge ({platform.edgeLocations})
-            </Badge>
-          )}
+          {platform.edgeLocations !== undefined &&
+            Number(platform.edgeLocations) > 0 && (
+              <Badge bg="info" className="me-2 mb-1">
+                <Zap size={12} className="me-1" />
+                Edge ({platform.edgeLocations})
+              </Badge>
+            )}
         </div>
       </Card.Body>
 

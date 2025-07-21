@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { ThemeToggle } from "../components/theme/ThemeToggle";
 
 interface BasePageProps {
   children: React.ReactNode;
@@ -10,27 +10,37 @@ const BasePage: React.FC<BasePageProps> = ({
   children,
   title = "MLOps Platform Scores",
 }) => {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const handleBackToDashboard = () => {
-    navigate("/dashboard");
-  };
-
-  const isDashboard = location.pathname === "/dashboard";
-
   return (
     <div>
       <header>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-          {!isDashboard && (
-            <button onClick={handleBackToDashboard}>Back to Dashboard</button>
-          )}
-          <div style={{ flex: 1, textAlign: 'center' }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "1rem",
+            position: "relative",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              textAlign: "center",
+            }}
+          >
             <h1>{title}</h1>
           </div>
-          {/* Empty div for spacing when button is present */}
-          <div style={{ width: !isDashboard ? 'auto' : '0' }}></div>
+          <div
+            style={{
+              width: "120px",
+              display: "flex",
+              justifyContent: "flex-end",
+            }}
+          >
+            <ThemeToggle variant="icon" size="md" />
+          </div>
         </div>
       </header>
 

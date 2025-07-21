@@ -1,5 +1,6 @@
 import LinkToDashboard from "../components/linkButtons/LinkToDashboard";
 import { SlackLogin } from "../components/slackLogin/SlackLogin";
+import { ThemeToggle } from "../components/theme/ThemeToggle";
 
 const Root = () => {
   return (
@@ -13,6 +14,11 @@ const Root = () => {
         padding: "20px",
       }}
     >
+      {/* Theme toggle in the top right */}
+      <div style={{ position: "absolute", top: "20px", right: "20px" }}>
+        <ThemeToggle variant="icon" />
+      </div>
+
       <h1>Welcome to MLOps Platform Score</h1>
       <p>A community-driven app for evaluating MLOps platforms.</p>
 

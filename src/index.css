@@ -1,15 +1,69 @@
 @import "tailwindcss";
 
+/* Theme CSS Variables */
+:root {
+  --bs-body-color: #212529;
+  --bs-body-bg: #ffffff;
+  --bs-border-color: #dee2e6;
+  --bs-secondary-bg: #f8f9fa;
+  --custom-card-bg: #ffffff;
+  --custom-card-border: #dee2e6;
+  --custom-shadow: rgba(0, 0, 0, 0.1);
+  --custom-hover-shadow: rgba(0, 0, 0, 0.15);
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-color: #e9ecef;
+  --bs-body-bg: #212529;
+  --bs-border-color: #495057;
+  --bs-secondary-bg: #343a40;
+  --custom-card-bg: #343a40;
+  --custom-card-border: #495057;
+  --custom-shadow: rgba(0, 0, 0, 0.3);
+  --custom-hover-shadow: rgba(0, 0, 0, 0.4);
+}
+
 /* Custom styles for PlatformCard */
 .hover-shadow-lg {
   transition: all 0.3s ease-in-out;
+  background-color: var(--custom-card-bg);
+  border-color: var(--custom-card-border);
 }
 
 .hover-shadow-lg:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
+  box-shadow: 0 8px 25px var(--custom-hover-shadow) !important;
 }
 
 .transition-all {
   transition: all 0.3s ease-in-out;
+}
+
+/* Dark mode adjustments for cards and components */
+.card {
+  background-color: var(--custom-card-bg);
+  border-color: var(--custom-card-border);
+}
+
+/* Smooth transitions for theme changes */
+* {
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+/* Custom scrollbar for dark mode */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bs-secondary-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bs-border-color);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--bs-body-color);
 }
