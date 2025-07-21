@@ -1,195 +1,140 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import {
   Search,
   Filter,
   Grid,
   List,
-  Star,
-  TrendingUp,
-  Users,
 } from "lucide-react";
-
-interface Platform {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  rating: number;
-  users: number;
-  features: string[];
-  logo?: string;
-  trending?: boolean;
-}
+import type { PlatformInformation } from "../model/platform";
+import { searchPlatform } from "../api/search";
+import { PlatformCard } from "../components/platform/PlatformCard";
+import DontSeeYourPlatform from "../components/createButtons/DontSeeYourPlatform";
 
 const PlatformsSearch: React.FC = () => {
-  const [platforms, setPlatforms] = useState<Platform[]>([]);
-  const [filteredPlatforms, setFilteredPlatforms] = useState<Platform[]>([]);
-  const [searchTerm, setSearchTerm] = useState("");
+  const { query } = useParams<{ query: string }>();
+  const [platforms, setPlatforms] = useState<PlatformInformation[]>([]);
+  const [filteredPlatforms, setFilteredPlatforms] = useState<PlatformInformation[]>([]);
+  const [searchTerm, setSearchTerm] = useState(query || "");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   const [loading, setLoading] = useState(true);
-
-  // Mock data - replace with actual API call
-  const mockPlatforms: Platform[] = [
-    {
-      id: "1",
-      name: "MLflow",
-      description:
-        "Open source platform for machine learning lifecycle management",
-      category: "ML Lifecycle",
-      rating: 4.5,
-      users: 15000,
-      features: ["Experiment Tracking", "Model Registry", "Model Serving"],
-      trending: true,
-    },
-    {
-      id: "2",
-      name: "Kubeflow",
-      description: "Machine learning toolkit for Kubernetes",
-      category: "Orchestration",
-      rating: 4.2,
-      users: 8500,
-      features: [
-        "Pipeline Management",
-        "Distributed Training",
-        "Model Serving",
-      ],
-    },
-    {
-      id: "3",
-      name: "Apache Airflow",
-      description:
-        "Platform for developing, scheduling and monitoring workflows",
-      category: "Orchestration",
-      rating: 4.3,
-      users: 12000,
-      features: ["Workflow Management", "Scheduling", "Monitoring"],
-    },
-  ];
+  const [error, setError] = useState<string | null>(null);
 
   const categories = [
     "all",
-    "ML Lifecycle",
-    "Orchestration",
-    "Data Processing",
-    "Model Serving",
+    "Hyperscaler",
+    "GPU Cloud",
+    "Edge Cloud",
+    "Hybrid Cloud",
+    "Private Cloud",
+    "Specialized AI",
+    "Container Platform",
+    "Serverless",
+    "Other"
   ];
 
+  // Load platforms from API
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setPlatforms(mockPlatforms);
-      setFilteredPlatforms(mockPlatforms);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    const loadPlatforms = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        // Use the query from URL params for initial load
+        const searchQuery = query || "";
+        
+        if (searchQuery) {
+          const results = await searchPlatform(searchQuery, 1, 50);
+          setPlatforms(results);
+          setFilteredPlatforms(results);
+        } else {
+          // If no search query, set empty results
+          setPlatforms([]);
+          setFilteredPlatforms([]);
+        }
+      } catch (err) {
+        console.error('Failed to load platforms:', err);
+        setError('Failed to load platforms. Please try again.');
+        setPlatforms([]);
+        setFilteredPlatforms([]);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    loadPlatforms();
+  }, [query]); // Only depend on query from URL params
+
+  // Filter platforms based on search term and category
   useEffect(() => {
     let filtered = platforms;
 
     // Filter by search term
-    if (searchTerm) {
+    if (searchTerm && searchTerm !== (query || "")) {
       filtered = filtered.filter(
         (platform) =>
-          platform.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          platform.description
-            .toLowerCase()
-            .includes(searchTerm.toLowerCase()) ||
-          platform.features.some((feature) =>
-            feature.toLowerCase().includes(searchTerm.toLowerCase())
+          platform.platformName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          platform.platformType.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          platform.parentCompany?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          platform.specializations?.some((spec) =>
+            spec.toLowerCase().includes(searchTerm.toLowerCase())
           )
       );
     }
 
-    // Filter by category
+    // Filter by category (platform type)
     if (selectedCategory !== "all") {
       filtered = filtered.filter(
-        (platform) => platform.category === selectedCategory
+        (platform) => platform.platformType === selectedCategory
       );
     }
 
     setFilteredPlatforms(filtered);
-  }, [searchTerm, selectedCategory, platforms]);
+  }, [searchTerm, selectedCategory, platforms, query]);
 
-  const PlatformCard: React.FC<{ platform: Platform }> = ({ platform }) => (
-    <div className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center space-x-3">
-          <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-            <span className="text-blue-600 font-bold text-lg">
-              {platform.name.charAt(0)}
-            </span>
-          </div>
-          <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {platform.name}
-            </h3>
-            {platform.trending && (
-              <span className="inline-flex items-center text-sm text-green-600">
-                <TrendingUp className="w-4 h-4 mr-1" />
-                Trending
-              </span>
-            )}
-          </div>
-        </div>
-        <div className="flex items-center space-x-1">
-          <Star className="w-4 h-4 text-yellow-400 fill-current" />
-          <span className="text-sm text-gray-600">{platform.rating}</span>
-        </div>
-      </div>
+  const handleSearch = async () => {
+    if (!searchTerm.trim()) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      const results = await searchPlatform(searchTerm, 1, 50);
+      setPlatforms(results);
+      setFilteredPlatforms(results);
+    } catch (err) {
+      console.error('Search failed:', err);
+      setError('Search failed. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
-      <p className="text-gray-600 text-sm mb-4 line-clamp-2">
-        {platform.description}
-      </p>
-
-      <div className="flex items-center justify-between mb-4">
-        <span className="px-3 py-1 bg-blue-100 text-blue-800 text-xs rounded-full">
-          {platform.category}
-        </span>
-        <div className="flex items-center text-sm text-gray-500">
-          <Users className="w-4 h-4 mr-1" />
-          {platform.users.toLocaleString()} users
-        </div>
-      </div>
-
-      <div className="flex flex-wrap gap-2">
-        {platform.features.slice(0, 3).map((feature, index) => (
-          <span
-            key={index}
-            className="text-xs bg-gray-100 text-gray-700 px-2 py-1 rounded"
-          >
-            {feature}
-          </span>
-        ))}
-      </div>
-    </div>
-  );
-
-  const PlatformListItem: React.FC<{ platform: Platform }> = ({ platform }) => (
-    <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
+  const PlatformListItem: React.FC<{ platform: PlatformInformation }> = ({ platform }) => (
+    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-            <span className="text-blue-600 font-bold">
-              {platform.name.charAt(0)}
+          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+            <span className="text-blue-600 dark:text-blue-300 font-bold">
+              {platform.platformName.charAt(0)}
             </span>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {platform.name}
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+              {platform.platformName}
             </h3>
-            <p className="text-gray-600 text-sm">{platform.description}</p>
+            <p className="text-gray-600 dark:text-gray-400 text-sm">{platform.platformType}</p>
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="flex items-center space-x-1">
-            <Star className="w-4 h-4 text-yellow-400 fill-current" />
-            <span className="text-sm text-gray-600">{platform.rating}</span>
+          <div className="text-sm text-gray-500 dark:text-gray-400">
+            {platform.regions.length} region{platform.regions.length !== 1 ? 's' : ''}
           </div>
-          <div className="flex items-center text-sm text-gray-500">
-            <Users className="w-4 h-4 mr-1" />
-            {platform.users.toLocaleString()}
-          </div>
+          {platform.slaUptime && (
+            <div className="text-sm text-green-600 dark:text-green-400">
+              {platform.slaUptime}% SLA
+            </div>
+          )}
         </div>
       </div>
     </div>
@@ -197,48 +142,61 @@ const PlatformsSearch: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
-          <p className="mt-4 text-gray-600">Loading platforms...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
+          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading platforms...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
             MLOps Platforms
           </h1>
-          <p className="text-gray-600">
+          <p className="text-gray-600 dark:text-gray-400">
             Discover and compare MLOps platforms for your projects
           </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-              <input
-                type="text"
-                placeholder="Search platforms, features, or categories..."
-                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
+            <div className="flex-1 flex gap-2">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                <input
+                  type="text"
+                  placeholder="Search platforms, features, or categories..."
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                      handleSearch();
+                    }
+                  }}
+                />
+              </div>
+              <button
+                onClick={handleSearch}
+                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+              >
+                Search
+              </button>
             </div>
 
             {/* Category Filter */}
             <div className="flex items-center space-x-2">
-              <Filter className="text-gray-400 w-5 h-5" />
+              <Filter className="text-gray-400 dark:text-gray-500 w-5 h-5" />
               <select
-                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -254,20 +212,20 @@ const PlatformsSearch: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg ${
+                className={`p-2 rounded-lg transition-colors ${
                   viewMode === "grid"
-                    ? "bg-blue-100 text-blue-600"
-                    : "text-gray-400"
+                    ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300"
+                    : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <Grid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg ${
+                className={`p-2 rounded-lg transition-colors ${
                   viewMode === "list"
-                    ? "bg-blue-100 text-blue-600"
-                    : "text-gray-400"
+                    ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300"
+                    : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
                 }`}
               >
                 <List className="w-5 h-5" />
@@ -276,26 +234,35 @@ const PlatformsSearch: React.FC = () => {
           </div>
         </div>
 
-        {/* Results */}
-        <div className="mb-4">
-          <p className="text-gray-600">
+        {/* Results Header with Don't See Your Platform Button */}
+        <div className="mb-4 flex justify-between items-center">
+          <p className="text-gray-600 dark:text-gray-400">
             Found {filteredPlatforms.length} platform
             {filteredPlatforms.length !== 1 ? "s" : ""}
           </p>
+          <DontSeeYourPlatform />
         </div>
 
+        {/* Error Message */}
+        {error && (
+          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
+            <p className="text-red-700 dark:text-red-300">{error}</p>
+          </div>
+        )}
+
         {/* Platforms Grid/List */}
-        {filteredPlatforms.length === 0 ? (
+        {filteredPlatforms.length === 0 && !loading ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 mb-4">
+            <div className="text-gray-400 dark:text-gray-500 mb-4">
               <Search className="w-16 h-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
               No platforms found
             </h3>
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-400 mb-4">
               Try adjusting your search terms or filters
             </p>
+            <DontSeeYourPlatform />
           </div>
         ) : (
           <div
@@ -305,11 +272,11 @@ const PlatformsSearch: React.FC = () => {
                 : "space-y-4"
             }
           >
-            {filteredPlatforms.map((platform) =>
+            {filteredPlatforms.map((platform, index) =>
               viewMode === "grid" ? (
-                <PlatformCard key={platform.id} platform={platform} />
+                <PlatformCard key={`${platform.platformName}-${index}`} platform={platform} />
               ) : (
-                <PlatformListItem key={platform.id} platform={platform} />
+                <PlatformListItem key={`${platform.platformName}-${index}`} platform={platform} />
               )
             )}
           </div>

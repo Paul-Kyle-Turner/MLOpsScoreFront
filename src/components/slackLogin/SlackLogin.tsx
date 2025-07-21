@@ -31,23 +31,7 @@ export const SlackLogin = () => {
 
   if (loading) {
     return (
-      <div
-        style={{
-          alignItems: "center",
-          color: "#666",
-          backgroundColor: "#f5f5f5",
-          border: "1px solid #ddd",
-          borderRadius: "4px",
-          display: "inline-flex",
-          fontFamily: "Lato, sans-serif",
-          fontSize: "16px",
-          fontWeight: 600,
-          height: "48px",
-          justifyContent: "center",
-          textDecoration: "none",
-          width: "256px",
-        }}
-      >
+      <div className="inline-flex items-center justify-center w-64 h-12 text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-lg font-semibold transition-colors">
         Loading...
       </div>
     );
@@ -55,23 +39,7 @@ export const SlackLogin = () => {
 
   if (error) {
     return (
-      <div
-        style={{
-          alignItems: "center",
-          color: "#d32f2f",
-          backgroundColor: "#ffebee",
-          border: "1px solid #f44336",
-          borderRadius: "4px",
-          display: "inline-flex",
-          fontFamily: "Lato, sans-serif",
-          fontSize: "16px",
-          fontWeight: 600,
-          height: "48px",
-          justifyContent: "center",
-          textDecoration: "none",
-          width: "256px",
-        }}
-      >
+      <div className="inline-flex items-center justify-center w-64 h-12 text-red-700 dark:text-red-300 bg-red-50 dark:bg-red-900/20 border border-red-300 dark:border-red-800 rounded-lg font-semibold transition-colors">
         Error loading Slack login
       </div>
     );
@@ -84,25 +52,11 @@ export const SlackLogin = () => {
   return (
     <a
       href={slackUrl}
-      style={{
-        alignItems: "center",
-        color: "#000",
-        backgroundColor: "#fff",
-        border: "1px solid #ddd",
-        borderRadius: "4px",
-        display: "inline-flex",
-        fontFamily: "Lato, sans-serif",
-        fontSize: "16px",
-        fontWeight: 600,
-        height: "48px",
-        justifyContent: "center",
-        textDecoration: "none",
-        width: "256px",
-      }}
+      className="inline-flex items-center justify-center w-64 h-12 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg font-semibold hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors no-underline"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        style={{ height: "20px", width: "20px", marginRight: "12px" }}
+        className="h-5 w-5 mr-3"
         viewBox="0 0 122.8 122.8"
       >
         <path
