@@ -1,20 +1,18 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import {
-  Search,
-  Filter,
-  Grid,
-  List,
-} from "lucide-react";
+import { Search, Filter, Grid, List } from "lucide-react";
 import type { PlatformInformation } from "../model/platform";
 import { searchPlatform } from "../api/search";
 import { PlatformCard } from "../components/platform/PlatformCard";
 import DontSeeYourPlatform from "../components/createButtons/DontSeeYourPlatform";
+import BasePage from "./Base";
 
 const PlatformsSearch: React.FC = () => {
   const { query } = useParams<{ query: string }>();
   const [platforms, setPlatforms] = useState<PlatformInformation[]>([]);
-  const [filteredPlatforms, setFilteredPlatforms] = useState<PlatformInformation[]>([]);
+  const [filteredPlatforms, setFilteredPlatforms] = useState<
+    PlatformInformation[]
+  >([]);
   const [searchTerm, setSearchTerm] = useState(query || "");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
@@ -31,7 +29,7 @@ const PlatformsSearch: React.FC = () => {
     "Specialized AI",
     "Container Platform",
     "Serverless",
-    "Other"
+    "Other",
   ];
 
   // Load platforms from API
@@ -40,10 +38,10 @@ const PlatformsSearch: React.FC = () => {
       try {
         setLoading(true);
         setError(null);
-        
+
         // Use the query from URL params for initial load
         const searchQuery = query || "";
-        
+
         if (searchQuery) {
           const results = await searchPlatform(searchQuery, 1, 50);
           setPlatforms(results);
@@ -54,8 +52,8 @@ const PlatformsSearch: React.FC = () => {
           setFilteredPlatforms([]);
         }
       } catch (err) {
-        console.error('Failed to load platforms:', err);
-        setError('Failed to load platforms. Please try again.');
+        console.error("Failed to load platforms:", err);
+        setError("Failed to load platforms. Please try again.");
         setPlatforms([]);
         setFilteredPlatforms([]);
       } finally {
@@ -74,9 +72,15 @@ const PlatformsSearch: React.FC = () => {
     if (searchTerm && searchTerm !== (query || "")) {
       filtered = filtered.filter(
         (platform) =>
-          platform.platformName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          platform.platformType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          platform.parentCompany?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          platform.platformName
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          platform.platformType
+            .toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
+          platform.parentCompany
+            ?.toLowerCase()
+            .includes(searchTerm.toLowerCase()) ||
           platform.specializations?.some((spec) =>
             spec.toLowerCase().includes(searchTerm.toLowerCase())
           )
@@ -95,7 +99,7 @@ const PlatformsSearch: React.FC = () => {
 
   const handleSearch = async () => {
     if (!searchTerm.trim()) return;
-    
+
     try {
       setLoading(true);
       setError(null);
@@ -103,14 +107,16 @@ const PlatformsSearch: React.FC = () => {
       setPlatforms(results);
       setFilteredPlatforms(results);
     } catch (err) {
-      console.error('Search failed:', err);
-      setError('Search failed. Please try again.');
+      console.error("Search failed:", err);
+      setError("Search failed. Please try again.");
     } finally {
       setLoading(false);
     }
   };
 
-  const PlatformListItem: React.FC<{ platform: PlatformInformation }> = ({ platform }) => (
+  const PlatformListItem: React.FC<{ platform: PlatformInformation }> = ({
+    platform,
+  }) => (
     <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
@@ -128,7 +134,8 @@ const PlatformsSearch: React.FC = () => {
         </div>
         <div className="flex items-center space-x-4">
           <div className="text-sm text-gray-500">
-            {platform.regions.length} region{platform.regions.length !== 1 ? 's' : ''}
+            {platform.regions.length} region
+            {platform.regions.length !== 1 ? "s" : ""}
           </div>
           {platform.slaUptime && (
             <div className="text-sm text-green-600">
@@ -152,7 +159,7 @@ const PlatformsSearch: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <BasePage title="MLOps Platforms">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
@@ -178,7 +185,7 @@ const PlatformsSearch: React.FC = () => {
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
+                    if (e.key === "Enter") {
                       handleSearch();
                     }
                   }}
@@ -274,15 +281,21 @@ const PlatformsSearch: React.FC = () => {
           >
             {filteredPlatforms.map((platform, index) =>
               viewMode === "grid" ? (
-                <PlatformCard key={`${platform.platformName}-${index}`} platform={platform} />
+                <PlatformCard
+                  key={`${platform.platformName}-${index}`}
+                  platform={platform}
+                />
               ) : (
-                <PlatformListItem key={`${platform.platformName}-${index}`} platform={platform} />
+                <PlatformListItem
+                  key={`${platform.platformName}-${index}`}
+                  platform={platform}
+                />
               )
             )}
           </div>
         )}
       </div>
-    </div>
+    </BasePage>
   );
 };
 

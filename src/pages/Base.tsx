@@ -1,22 +1,23 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 interface BasePageProps {
   children: React.ReactNode;
   title?: string;
-  showBackButton?: boolean;
 }
 
 const BasePage: React.FC<BasePageProps> = ({
   children,
-  title = "MLOps Score",
-  showBackButton = true,
+  title = "MLOps Platform Scores",
 }) => {
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const handleBackToHome = () => {
-    navigate("/");
+  const handleBackToDashboard = () => {
+    navigate("/dashboard");
   };
+
+  const isDashboard = location.pathname === "/dashboard";
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,32 +25,22 @@ const BasePage: React.FC<BasePageProps> = ({
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center">
-              {showBackButton && (
-                <button
-                  onClick={handleBackToHome}
-                  className="mr-4 p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors"
-                  aria-label="Back to home"
-                >
-                  <svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M15 19l-7-7 7-7"
-                    />
-                  </svg>
-                </button>
-              )}
               <h1 className="text-xl font-semibold text-gray-900">{title}</h1>
             </div>
+            {!isDashboard && (
+              <button
+                onClick={handleBackToDashboard}
+                className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-md transition-colors"
+                aria-label="Back to dashboard"
+              >
+                Back to Dashboard
+              </button>
+            )}
           </div>
         </div>
       </header>
+
+      <div className="border-b border-gray-200"></div>
 
       <main className="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
         {children}
