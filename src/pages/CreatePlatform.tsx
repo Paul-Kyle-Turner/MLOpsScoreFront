@@ -279,9 +279,9 @@ export const CreatePlatform = () => {
       setSuccess("Platform created successfully!");
 
       // Redirect to the platform page or dashboard after a delay
-      setTimeout(() => {
-        navigate("/dashboard");
-      }, 2000);
+      // setTimeout(() => {
+      //   navigate("/dashboard");
+      // }, 2000);
     } catch (error) {
       console.error("Error creating platform:", error);
       setError("Failed to create platform. Please try again.");
