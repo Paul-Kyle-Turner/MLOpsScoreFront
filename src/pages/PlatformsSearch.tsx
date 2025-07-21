@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import type { PlatformInformation } from "../model/platform";
 import { searchPlatform } from "../api/search";
 import { PlatformCard } from "../components/platform/PlatformCard";
-import DontSeeYourPlatform from "../components/createButtons/DontSeeYourPlatform";
+import DontSeeYourPlatform from "../components/dontSeeYourPlatform/DontSeeYourPlatform";
 import BasePage from "./Base";
 
 const PlatformsSearch: React.FC = () => {

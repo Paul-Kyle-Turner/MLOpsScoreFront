@@ -67,3 +67,114 @@
 ::-webkit-scrollbar-thumb:hover {
   background: var(--bs-body-color);
 }
+
+/* Form input styles for theme consistency */
+.form-input {
+  padding: 6px;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 4px;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--bs-primary, #0d6efd);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .form-input:focus {
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
+}
+
+/* Textarea variant */
+.form-textarea {
+  padding: 6px;
+  border: 1px solid var(--bs-border-color);
+  border-radius: 4px;
+  background-color: var(--bs-body-bg);
+  color: var(--bs-body-color);
+  min-height: 60px;
+  width: 100%;
+}
+
+.form-textarea:focus {
+  outline: none;
+  border-color: var(--bs-primary, #0d6efd);
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+[data-bs-theme="dark"] .form-textarea:focus {
+  box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.25);
+}
+
+/* Button styles */
+.btn-primary {
+  padding: 5px 10px;
+  background-color: var(--bs-primary, #007bff);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-primary:hover {
+  background-color: var(--bs-primary-dark, #0056b3);
+}
+
+[data-bs-theme="dark"] .btn-primary {
+  background-color: #0d6efd;
+}
+
+[data-bs-theme="dark"] .btn-primary:hover {
+  background-color: #0b5ed7;
+}
+
+.btn-danger {
+  padding: 5px 10px;
+  background-color: var(--bs-danger, #dc3545);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.btn-danger:hover {
+  background-color: var(--bs-danger-dark, #c82333);
+}
+
+/* Form labels */
+.form-label {
+  font-weight: bold;
+  color: var(--bs-body-color);
+  display: block;
+  margin-bottom: 5px;
+}
+
+/* Form section styles */
+.form-section {
+  margin-bottom: 30px;
+  padding: 20px;
+  background-color: var(--bs-secondary-bg);
+  border-radius: 6px;
+  border: 1px solid var(--bs-border-color);
+}
+
+.form-section h3 {
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: var(--bs-body-color);
+  border-bottom: 2px solid var(--bs-border-color);
+  padding-bottom: 10px;
+}
+
+/* Instance card styles */
+.instance-card {
+  border: 1px solid var(--bs-border-color);
+  padding: 15px;
+  border-radius: 4px;
+  margin-bottom: 10px;
+  background-color: var(--bs-secondary-bg);
+}

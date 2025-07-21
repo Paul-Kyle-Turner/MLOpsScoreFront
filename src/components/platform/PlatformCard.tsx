@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { useTheme } from "../../hooks/useTheme";
 import type { PlatformInformation } from "../../model/platform";
+import { EvaluateButton } from "../evaluateButton/EvaluateButton";
 
 interface PlatformCardProps {
   platform: PlatformInformation;
@@ -176,7 +177,7 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
       </Card.Body>
 
       <Card.Footer className="border-0 pt-0">
-        <Row className="g-2">
+        <Row className="g-2 mb-2">
           <Col>
             <Link
               to={`/platform/${encodeURIComponent(platform.platformName)}`}
@@ -186,6 +187,16 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
               View Details
             </Link>
           </Col>
+          <Col>
+            <EvaluateButton
+              platform={platform}
+              variant="outline-success"
+              size="sm"
+              className="w-100"
+            />
+          </Col>
+        </Row>
+        <Row className="g-2">
           <Col>
             <Button
               href={platform.websiteUrl}
