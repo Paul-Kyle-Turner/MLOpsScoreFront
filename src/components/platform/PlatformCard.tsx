@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import type { PlatformInformation } from "../../model/platform";
 
 interface PlatformCardProps {
@@ -104,14 +105,22 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
 
       {/* Footer */}
       <div className="mt-4 pt-4 border-t border-gray-200 flex justify-between items-center">
-        <a
-          href={platform.websiteUrl}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-blue-600 hover:text-blue-800"
-        >
-          Learn More →
-        </a>
+        <div className="flex space-x-4">
+          <Link
+            to={`/platform/${encodeURIComponent(platform.platformName)}`}
+            className="text-sm text-blue-600 hover:text-blue-800"
+          >
+            View Details →
+          </Link>
+          <a
+            href={platform.websiteUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-gray-600 hover:text-gray-800"
+          >
+            Website →
+          </a>
+        </div>
         <span className="text-xs text-gray-400">
           Updated: {new Date(platform.lastUpdated).toLocaleDateString()}
         </span>

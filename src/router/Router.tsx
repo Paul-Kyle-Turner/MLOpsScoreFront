@@ -4,6 +4,7 @@ import { Dashboard } from "../pages/Dashboard";
 import { CreatePlatform } from "../pages/CreatePlatform";
 import { Evaluation } from "../pages/Evaluation";
 import PlatformsSearch from "../pages/PlatformsSearch";
+import Platform from "../pages/Platform";
 
 const router = createBrowserRouter([
   {
@@ -25,6 +26,10 @@ const router = createBrowserRouter([
   {
     path: "/platforms/search/:query",
     element: <PlatformsSearch />,
+  },
+  {
+    path: "/platform/:platformName",
+    element: <Platform />,
   },
 ]);
 

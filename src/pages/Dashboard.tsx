@@ -4,7 +4,7 @@ import BasePage from "./Base";
 
 export const Dashboard = () => {
   return (
-    <BasePage title="MLOps Platform Score Dashboard">
+    <BasePage>
       <div
         style={{
           display: "flex",

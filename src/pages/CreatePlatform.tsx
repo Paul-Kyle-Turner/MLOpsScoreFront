@@ -13,6 +13,7 @@ import { ComputeInstanceForm } from "../components/forms/ComputeInstanceForm";
 import { ProprietarySoftwareForm } from "../components/forms/ProprietarySoftwareForm";
 import { ProprietaryHardwareForm } from "../components/forms/ProprietaryHardwareForm";
 import { SupportTierForm } from "../components/forms/SupportTierForm";
+import { DidYouMeanPlatform } from "../components/platform";
 import BasePage from "./Base";
 
 export const CreatePlatform = () => {
@@ -21,6 +22,8 @@ export const CreatePlatform = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [platformExists, setPlatformExists] = useState<boolean | null>(null);
+  const [similarPlatforms, setSimilarPlatforms] = useState<PlatformInformation[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState<Partial<PlatformInformation>>({
@@ -69,15 +72,41 @@ export const CreatePlatform = () => {
   const checkPlatformName = useCallback(async (name: string) => {
     if (!name.trim()) {
       setPlatformExists(null);
+      setSimilarPlatforms([]);
+      setShowSuggestions(false);
       return;
     }
 
     try {
-      const exists = await checkPlatformExists(name.trim());
-      setPlatformExists(exists);
+      const results = await checkPlatformExists(name.trim());
+      
+      if (results.length > 0) {
+        // Check if there's an exact match
+        const exactMatch = results.find(
+          platform => platform.platformName.toLowerCase() === name.trim().toLowerCase()
+        );
+        
+        if (exactMatch) {
+          setPlatformExists(true);
+          setSimilarPlatforms([]);
+          setShowSuggestions(false);
+        } else {
+          // Similar platforms found, but no exact match
+          setPlatformExists(false);
+          setSimilarPlatforms(results);
+          setShowSuggestions(true);
+        }
+      } else {
+        // No similar platforms found
+        setPlatformExists(false);
+        setSimilarPlatforms([]);
+        setShowSuggestions(false);
+      }
     } catch (error) {
       console.error("Error checking platform name:", error);
       setPlatformExists(null);
+      setSimilarPlatforms([]);
+      setShowSuggestions(false);
     }
   }, []);
 
@@ -89,10 +118,6 @@ export const CreatePlatform = () => {
       ...prev,
       [field]: value,
     }));
-
-    if (field === "platformName") {
-      checkPlatformName(value as string);
-    }
   };
 
   const handleNestedInputChange = (
@@ -273,8 +298,15 @@ export const CreatePlatform = () => {
         }}
       >
         <h1 style={{ textAlign: "center", marginBottom: "30px" }}>
-          Create MLOps Platform
+          Create an MLOps Platform Entry
         </h1>
+        <p style={{ textAlign: "center" }}>
+          Adding an entry to our database helps to ensure that we have up to
+          date information.
+        </p>
+        <p style={{ textAlign: "center" }}>
+          We would like to thank you for your contribution!
+        </p>
 
         {error && (
           <div
@@ -334,6 +366,7 @@ export const CreatePlatform = () => {
                 onChange={(e) =>
                   handleInputChange("platformName", e.target.value)
                 }
+                onBlur={(e) => checkPlatformName(e.target.value)}
                 style={{
                   width: "100%",
                   padding: "8px",
@@ -355,12 +388,20 @@ export const CreatePlatform = () => {
                   A platform with this name already exists
                 </div>
               )}
-              {platformExists === false && (
+              {platformExists === false && !showSuggestions && (
                 <div
                   style={{ color: "#3c3", fontSize: "14px", marginTop: "5px" }}
                 >
                   Platform name is available
                 </div>
+              )}
+              
+              {showSuggestions && similarPlatforms.length > 0 && (
+                <DidYouMeanPlatform
+                  platforms={similarPlatforms}
+                  searchedName={formData.platformName || ""}
+                  onDismiss={() => setShowSuggestions(false)}
+                />
               )}
             </div>
 
