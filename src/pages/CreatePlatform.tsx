@@ -22,7 +22,9 @@ export const CreatePlatform = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [platformExists, setPlatformExists] = useState<boolean | null>(null);
-  const [similarPlatforms, setSimilarPlatforms] = useState<PlatformInformation[]>([]);
+  const [similarPlatforms, setSimilarPlatforms] = useState<
+    PlatformInformation[]
+  >([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
 
   // Form state
@@ -79,13 +81,14 @@ export const CreatePlatform = () => {
 
     try {
       const results = await checkPlatformExists(name.trim());
-      
+
       if (results.length > 0) {
         // Check if there's an exact match
         const exactMatch = results.find(
-          platform => platform.platformName.toLowerCase() === name.trim().toLowerCase()
+          (platform) =>
+            platform.platformName.toLowerCase() === name.trim().toLowerCase()
         );
-        
+
         if (exactMatch) {
           setPlatformExists(true);
           setSimilarPlatforms([]);
@@ -395,7 +398,7 @@ export const CreatePlatform = () => {
                   Platform name is available
                 </div>
               )}
-              
+
               {showSuggestions && similarPlatforms.length > 0 && (
                 <DidYouMeanPlatform
                   platforms={similarPlatforms}
