@@ -19,21 +19,15 @@ export const SearchBoxLinkOut = () => {
   };
 
   return (
-    <div className="flex gap-2 max-w-md mx-auto">
+    <div>
       <input
         type="text"
-        placeholder="Search MLOps platforms..."
+        placeholder="Search..."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
         onKeyDown={handleKeyDown}
-        className="flex-1 px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
       />
-      <button 
-        onClick={handleSearch}
-        className="px-6 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
-      >
-        Search
-      </button>
+      <button onClick={handleSearch}>Search</button>
     </div>
   );
 };

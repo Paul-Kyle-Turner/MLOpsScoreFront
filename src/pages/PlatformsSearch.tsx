@@ -111,27 +111,27 @@ const PlatformsSearch: React.FC = () => {
   };
 
   const PlatformListItem: React.FC<{ platform: PlatformInformation }> = ({ platform }) => (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow border border-gray-200 dark:border-gray-700">
+    <div className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition-shadow">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
-            <span className="text-blue-600 dark:text-blue-300 font-bold">
+          <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+            <span className="text-blue-600 font-bold">
               {platform.platformName.charAt(0)}
             </span>
           </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+            <h3 className="text-lg font-semibold text-gray-900">
               {platform.platformName}
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">{platform.platformType}</p>
+            <p className="text-gray-600 text-sm">{platform.platformType}</p>
           </div>
         </div>
         <div className="flex items-center space-x-4">
-          <div className="text-sm text-gray-500 dark:text-gray-400">
+          <div className="text-sm text-gray-500">
             {platform.regions.length} region{platform.regions.length !== 1 ? 's' : ''}
           </div>
           {platform.slaUptime && (
-            <div className="text-sm text-green-600 dark:text-green-400">
+            <div className="text-sm text-green-600">
               {platform.slaUptime}% SLA
             </div>
           )}
@@ -142,39 +142,39 @@ const PlatformsSearch: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center transition-colors">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 dark:border-blue-400 mx-auto"></div>
-          <p className="mt-4 text-gray-600 dark:text-gray-400">Loading platforms...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Loading platforms...</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 transition-colors">
+    <div className="min-h-screen bg-gray-50">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 dark:text-gray-100 mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             MLOps Platforms
           </h1>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Discover and compare MLOps platforms for your projects
           </p>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 mb-8 border border-gray-200 dark:border-gray-700">
+        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
           <div className="flex flex-col md:flex-row gap-4">
             {/* Search */}
             <div className="flex-1 flex gap-2">
               <div className="flex-1 relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500 w-5 h-5" />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
                 <input
                   type="text"
                   placeholder="Search platforms, features, or categories..."
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   onKeyDown={(e) => {
@@ -186,7 +186,7 @@ const PlatformsSearch: React.FC = () => {
               </div>
               <button
                 onClick={handleSearch}
-                className="px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-lg focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
               >
                 Search
               </button>
@@ -194,9 +194,9 @@ const PlatformsSearch: React.FC = () => {
 
             {/* Category Filter */}
             <div className="flex items-center space-x-2">
-              <Filter className="text-gray-400 dark:text-gray-500 w-5 h-5" />
+              <Filter className="text-gray-400 w-5 h-5" />
               <select
-                className="border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
               >
@@ -212,20 +212,20 @@ const PlatformsSearch: React.FC = () => {
             <div className="flex items-center space-x-2">
               <button
                 onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg ${
                   viewMode === "grid"
-                    ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300"
-                    : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    ? "bg-blue-100 text-blue-600"
+                    : "text-gray-400"
                 }`}
               >
                 <Grid className="w-5 h-5" />
               </button>
               <button
                 onClick={() => setViewMode("list")}
-                className={`p-2 rounded-lg transition-colors ${
+                className={`p-2 rounded-lg ${
                   viewMode === "list"
-                    ? "bg-blue-100 dark:bg-blue-900 text-blue-600 dark:text-blue-300"
-                    : "text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700"
+                    ? "bg-blue-100 text-blue-600"
+                    : "text-gray-400"
                 }`}
               >
                 <List className="w-5 h-5" />
@@ -236,7 +236,7 @@ const PlatformsSearch: React.FC = () => {
 
         {/* Results Header with Don't See Your Platform Button */}
         <div className="mb-4 flex justify-between items-center">
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-600">
             Found {filteredPlatforms.length} platform
             {filteredPlatforms.length !== 1 ? "s" : ""}
           </p>
@@ -245,21 +245,21 @@ const PlatformsSearch: React.FC = () => {
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 mb-6">
-            <p className="text-red-700 dark:text-red-300">{error}</p>
+          <div className="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+            <p className="text-red-700">{error}</p>
           </div>
         )}
 
         {/* Platforms Grid/List */}
         {filteredPlatforms.length === 0 && !loading ? (
           <div className="text-center py-12">
-            <div className="text-gray-400 dark:text-gray-500 mb-4">
+            <div className="text-gray-400 mb-4">
               <Search className="w-16 h-16 mx-auto" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">
+            <h3 className="text-lg font-semibold text-gray-900 mb-2">
               No platforms found
             </h3>
-            <p className="text-gray-600 dark:text-gray-400 mb-4">
+            <p className="text-gray-600 mb-4">
               Try adjusting your search terms or filters
             </p>
             <DontSeeYourPlatform />
