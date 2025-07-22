@@ -16,9 +16,8 @@ export const SlackLogin = () => {
         const url = response.redirectUrl;
 
         setSlackUrl(url || null);
-
       } catch (err) {
-        console.error('Error fetching Slack OAuth URL:', err);
+        console.error("Error fetching Slack OAuth URL:", err);
         setError(
           err instanceof Error ? err.message : "Failed to get Slack OAuth URL"
         );

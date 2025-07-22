@@ -69,7 +69,7 @@ const BasePage: React.FC<BasePageProps> = ({
               textAlign: "center",
             }}
           >
-            <h1>{title}</h1>
+            <h2>{title}</h2>
           </div>
           <div
             style={{
