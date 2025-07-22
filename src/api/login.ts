@@ -20,7 +20,7 @@ export const getSlackOAuthUrl = async (): Promise<SlackOAuthResponse> => {
         API_BASE_URL + '/v1/slack/oauth',
         {
             method: 'GET',
-        }
+        },
     );
 
     if (!response.ok) {
@@ -28,7 +28,6 @@ export const getSlackOAuthUrl = async (): Promise<SlackOAuthResponse> => {
     }
 
     const data = await response.json();
-    console.log('Raw API response:', data);
 
     // Handle different possible response structures
     const redirectUrl = data.redirectUrl || data.redirect_url || data.url;
@@ -46,6 +45,7 @@ export const useSlackAuthenticated = () => {
         const response = await fetch(
             API_BASE_URL + '/v1/slack/authenticated',
             {
+                credentials: 'include',
                 method: 'GET',
             }
         );

@@ -10,6 +10,7 @@ import type {
   ProprietaryHardware,
   SupportTier,
 } from "../model/platform";
+import { useSlackAuth } from "../hooks/useSlackAuth";
 
 const Platform: React.FC = () => {
   const { platformName } = useParams<{ platformName: string }>();
@@ -18,6 +19,7 @@ const Platform: React.FC = () => {
   const [platform, setPlatform] = useState<PlatformInformation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { authState } = useSlackAuth();
 
   useEffect(() => {
     const fetchPlatform = async () => {
@@ -172,12 +174,14 @@ const Platform: React.FC = () => {
               </div>
               <div className="col-md-4 text-md-end">
                 <div className="d-flex flex-column gap-2">
-                  <EvaluateButton
-                    platform={platform}
-                    variant="success"
-                    size="lg"
-                    className="fw-bold"
-                  />
+                  {authState?.ok && (
+                    <EvaluateButton
+                      platform={platform}
+                      variant="success"
+                      size="lg"
+                      className="fw-bold"
+                    />
+                  )}
                   {platform.websiteUrl && (
                     <a
                       href={platform.websiteUrl}

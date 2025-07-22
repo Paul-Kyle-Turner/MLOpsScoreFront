@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import type { PlatformInformation } from "../../model/platform";
 import { EvaluateButton } from "../evaluateButton/EvaluateButton";
+import { useSlackAuth } from "../../hooks/useSlackAuth";
 
 interface PlatformCardProps {
   platform: PlatformInformation;
@@ -24,6 +25,7 @@ interface PlatformCardProps {
 
 export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
   const primaryRegion = platform.regions[0];
+  const { authState } = useSlackAuth(); // Assuming useSlackAuth is imported from the correct path
 
   // Fix the minPrice calculation with proper null checks
   const minPrice =
@@ -184,12 +186,14 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
             </Link>
           </Col>
           <Col>
-            <EvaluateButton
-              platform={platform}
-              variant="outline-success"
-              size="sm"
-              className="w-100"
-            />
+            {authState?.ok && (
+              <EvaluateButton
+                platform={platform}
+                variant="outline-success"
+                size="sm"
+                className="w-100"
+              />
+            )}
           </Col>
         </Row>
         <Row className="g-2">

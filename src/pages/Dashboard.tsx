@@ -3,8 +3,11 @@ import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
 import { Scroller } from "../components/dashboardScroller/Scroller";
 import { CreateNewPlatform } from "../components/platform/CreateNewPlatform";
 import BasePage from "./Base";
+import { useSlackAuth } from "../hooks/useSlackAuth";
 
 export const Dashboard = () => {
+  const { authState } = useSlackAuth();
+
   return (
     <BasePage
       title="MLOps Platform Score Dashboard"
@@ -59,8 +62,7 @@ export const Dashboard = () => {
             </button>
           </Link>
 
-          {/* Create new platform button */}
-          <CreateNewPlatform size="lg" />
+          {authState?.ok && <CreateNewPlatform size="lg" />}
         </div>
       </div>
 
