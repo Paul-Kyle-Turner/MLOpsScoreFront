@@ -15,7 +15,6 @@ import {
   HardDrive,
   Eye,
 } from "lucide-react";
-import { useTheme } from "../../hooks/useTheme";
 import type { PlatformInformation } from "../../model/platform";
 import { EvaluateButton } from "../evaluateButton/EvaluateButton";
 
@@ -24,7 +23,6 @@ interface PlatformCardProps {
 }
 
 export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
-  const { theme } = useTheme();
   const primaryRegion = platform.regions[0];
 
   // Fix the minPrice calculation with proper null checks
@@ -52,8 +50,6 @@ export const PlatformCard: React.FC<PlatformCardProps> = ({ platform }) => {
         return "secondary";
     }
   };
-
-  console.log("Platform Card Rendered", platform, "Theme:", theme);
 
   return (
     <Card

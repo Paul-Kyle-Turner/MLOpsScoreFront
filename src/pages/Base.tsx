@@ -6,11 +6,15 @@ import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
 interface BasePageProps {
   children: React.ReactNode;
   title?: string;
+  noSearch?: boolean;
+  noHome?: boolean;
 }
 
 const BasePage: React.FC<BasePageProps> = ({
   children,
   title = "MLOps Community Platform Scores",
+  noSearch = false,
+  noHome = false,
 }) => {
   const navigate = useNavigate();
 
@@ -40,19 +44,21 @@ const BasePage: React.FC<BasePageProps> = ({
               gap: "0.5rem",
             }}
           >
-            <button
-              onClick={handleHomeClick}
-              style={{
-                background: "transparent",
-                border: "1px solid #ccc",
-                borderRadius: "4px",
-                padding: "0.5rem 1rem",
-                cursor: "pointer",
-                fontSize: "0.9rem",
-              }}
-            >
-              Home
-            </button>
+            {!noHome && (
+              <button
+                onClick={handleHomeClick}
+                style={{
+                  background: "transparent",
+                  border: "1px solid #ccc",
+                  borderRadius: "4px",
+                  padding: "0.5rem 1rem",
+                  cursor: "pointer",
+                  fontSize: "0.9rem",
+                }}
+              >
+                Home
+              </button>
+            )}
             <ThemeToggle variant="icon" size="md" />
           </div>
           <div
@@ -72,7 +78,7 @@ const BasePage: React.FC<BasePageProps> = ({
               justifyContent: "flex-end",
             }}
           >
-            <SearchBoxLinkOut />
+            {!noSearch && <SearchBoxLinkOut />}
           </div>
         </div>
       </header>

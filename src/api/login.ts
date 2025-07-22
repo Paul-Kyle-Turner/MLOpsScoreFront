@@ -7,14 +7,12 @@ interface SlackOAuthResponse {
     url?: string;
 }
 
-interface SlackAuthenticationResponse {
+export interface SlackAuthenticationResponse {
     ok: boolean;
-    url: string | null;
     team: string | null;
     user: string | null;
     team_id: string | null;
     user_id: string | null;
-    code: string | null;
 }
 
 export const getSlackOAuthUrl = async (): Promise<SlackOAuthResponse> => {
@@ -31,10 +29,10 @@ export const getSlackOAuthUrl = async (): Promise<SlackOAuthResponse> => {
 
     const data = await response.json();
     console.log('Raw API response:', data);
-    
+
     // Handle different possible response structures
     const redirectUrl = data.redirectUrl || data.redirect_url || data.url;
-    
+
     if (!redirectUrl || typeof redirectUrl !== 'string') {
         console.error('Invalid response structure:', data);
         throw new Error(`Invalid response from Slack OAuth API. Expected redirectUrl but got: ${JSON.stringify(data)}`);
@@ -43,15 +41,12 @@ export const getSlackOAuthUrl = async (): Promise<SlackOAuthResponse> => {
     return { redirectUrl } as SlackOAuthResponse;
 };
 
-export const useSlackLogin = () => {
-    return useCallback(async (slackCode: string): Promise<SlackAuthenticationResponse> => {
+export const useSlackAuthenticated = () => {
+    return useCallback(async (): Promise<SlackAuthenticationResponse> => {
         const response = await fetch(
-            API_BASE_URL + '/v1/slack/login',
+            API_BASE_URL + '/v1/slack/authenticated',
             {
-                method: 'POST',
-                headers: {
-                    'Slack-Code': slackCode
-                }
+                method: 'GET',
             }
         );
         return response.json() as Promise<SlackAuthenticationResponse>;
