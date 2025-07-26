@@ -13,7 +13,7 @@ export const LinkToDashboard = ({
 }: LinkToDashboardProps) => {
   const defaultStyle: React.CSSProperties = {
     padding: "12px 24px",
-    backgroundColor: "#007bff",
+    backgroundColor: "#667eea",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -37,7 +37,7 @@ export const LinkToDashboard = ({
         e.currentTarget.style.color = "#495057";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = "#007bff";
+        e.currentTarget.style.backgroundColor = "#667eea";
         e.currentTarget.style.color = "white";
       }}
     >
