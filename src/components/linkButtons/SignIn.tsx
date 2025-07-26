@@ -1,19 +1,19 @@
 import { Link } from "react-router-dom";
 
-interface LinkToDashboardProps {
+interface LinkToSignInProps {
   className?: string;
   style?: React.CSSProperties;
   children?: React.ReactNode;
 }
 
-export const LinkToDashboard = ({
+export const LinkToSignIn = ({
   className,
   style,
-  children = "Go to Dashboard",
-}: LinkToDashboardProps) => {
+  children = "Sign In",
+}: LinkToSignInProps) => {
   const defaultStyle: React.CSSProperties = {
     padding: "12px 24px",
-    backgroundColor: "#007bff",
+    backgroundColor: "#5d2fc9ff",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -29,9 +29,8 @@ export const LinkToDashboard = ({
 
   return (
     <Link
-      to="/dashboard"
+      to="/signin"
       style={defaultStyle}
-      className={className}
       onMouseEnter={(e) => {
         e.currentTarget.style.backgroundColor = "#e9ecef";
         e.currentTarget.style.color = "#495057";
@@ -40,10 +39,11 @@ export const LinkToDashboard = ({
         e.currentTarget.style.backgroundColor = "#007bff";
         e.currentTarget.style.color = "white";
       }}
+      className={className}
     >
       {children}
     </Link>
   );
 };
 
-export default LinkToDashboard;
+export default LinkToSignIn;

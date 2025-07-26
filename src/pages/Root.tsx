@@ -1,6 +1,6 @@
 import LinkToDashboard from "../components/linkButtons/LinkToDashboard";
+import LinkToSignIn from "../components/linkButtons/SignIn";
 import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
-import { Link } from "react-router-dom";
 
 const Root = () => {
   return (
@@ -19,32 +19,7 @@ const Root = () => {
           gap: "10px",
         }}
       >
-        <Link
-          to="/signin"
-          style={{
-            padding: "12px 24px",
-            backgroundColor: "#007bff",
-            color: "white",
-            border: "none",
-            borderRadius: "6px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "500",
-            textDecoration: "none",
-            display: "inline-block",
-            transition: "background-color 0.2s ease",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = "#e9ecef";
-            e.currentTarget.style.color = "#495057";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = "#f8f9fa";
-            e.currentTarget.style.color = "#6c757d";
-          }}
-        >
-          Sign In
-        </Link>
+        <LinkToSignIn />
         <LinkToDashboard children="Dashboard" />
       </div>
       <div
@@ -63,21 +38,63 @@ const Root = () => {
             justifyContent: "center",
             textAlign: "center",
             padding: "20px",
-            maxWidth: "600px",
+            maxWidth: "800px",
+            width: "100%",
           }}
         >
-          <h1>RateStack</h1>
+          <h1
+            style={{
+              fontSize: "4rem",
+              fontWeight: "800",
+              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              marginBottom: "0.5rem",
+              textShadow: "0 4px 8px rgba(0,0,0,0.1)",
+              letterSpacing: "-2px",
+            }}
+          >
+            RateStack
+          </h1>
 
           <br />
           <SearchBoxLinkOut />
           <br />
 
-          <p>Community-driven cloud platform evaluations.</p>
-
-          <p>
-            We request that you be a part of our community to contribute and
-            improve the platform.
+          <p
+            style={{
+              fontSize: "1.25rem",
+              color: "#6b7280",
+              fontWeight: "400",
+              maxWidth: "600px",
+              lineHeight: "1.6",
+              margin: "0 auto",
+              position: "relative",
+            }}
+          >
+            <span
+              style={{
+                background: "linear-gradient(90deg, #667eea, #764ba2, #667eea)",
+                backgroundSize: "200% 100%",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+                animation: "shimmer 3s ease-in-out infinite",
+                fontWeight: "500",
+              }}
+            >
+              Community-driven
+            </span>{" "}
+            cloud platform evaluations.
           </p>
+
+          <style>{`
+            @keyframes shimmer {
+              0%, 100% { background-position: 200% 0; }
+              50% { background-position: -200% 0; }
+            }
+          `}</style>
         </div>
 
         <br />
