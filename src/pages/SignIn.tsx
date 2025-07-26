@@ -4,6 +4,7 @@ import { UnifiedAuth } from "../components/unifiedAuth";
 import { useUnifiedAuth } from "../hooks/useUnifiedAuth";
 import { useTheme } from "../hooks/useTheme";
 import { ThemeToggle } from "../components/theme/ThemeToggle";
+import { RateStackH1 } from "../components/title/title";
 
 const SignIn: React.FC = () => {
   const [authError, setAuthError] = useState<string | null>(null);
@@ -22,7 +23,7 @@ const SignIn: React.FC = () => {
   const handleAuthSuccess = () => {
     setAuthError(null);
     setAuthSuccess("Sign in successful! Redirecting...");
-    
+
     // Small delay to show success message before redirect
     setTimeout(() => {
       navigate("/dashboard");
@@ -34,7 +35,7 @@ const SignIn: React.FC = () => {
     setAuthSuccess(null);
   };
 
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
 
   return (
     <div
@@ -46,19 +47,7 @@ const SignIn: React.FC = () => {
         transition: "background-color 0.3s ease, color 0.3s ease",
       }}
     >
-      {/* Theme Toggle in top right */}
-      <div
-        style={{
-          position: "absolute",
-          top: "20px",
-          right: "20px",
-          zIndex: 10,
-        }}
-      >
-        <ThemeToggle />
-      </div>
-
-      {/* Back to Home Link */}
+      {/* Theme Toggle in top left */}
       <div
         style={{
           position: "absolute",
@@ -67,36 +56,7 @@ const SignIn: React.FC = () => {
           zIndex: 10,
         }}
       >
-        <Link
-          to="/"
-          style={{
-            color: isDark ? "#e9ecef" : "#007bff",
-            textDecoration: "none",
-            padding: "8px 16px",
-            borderRadius: "4px",
-            backgroundColor: isDark ? "#343a40" : "#f8f9fa",
-            border: `1px solid ${isDark ? "#495057" : "#dee2e6"}`,
-            transition: "all 0.3s ease",
-            display: "inline-flex",
-            alignItems: "center",
-            gap: "8px",
-            fontSize: "14px",
-            fontWeight: "500",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = isDark ? "#495057" : "#e9ecef";
-            e.currentTarget.style.transform = "translateY(-1px)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = isDark ? "#343a40" : "#f8f9fa";
-            e.currentTarget.style.transform = "translateY(0)";
-          }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M20 11H7.83l5.59-5.59L12 4l-8 8 8 8 1.41-1.41L7.83 13H20v-2z"/>
-          </svg>
-          Back to Home
-        </Link>
+        <ThemeToggle />
       </div>
 
       {/* Main Content */}
@@ -116,8 +76,8 @@ const SignIn: React.FC = () => {
             padding: "40px",
             backgroundColor: isDark ? "#343a40" : "#ffffff",
             borderRadius: "12px",
-            boxShadow: isDark 
-              ? "0 10px 40px rgba(0, 0, 0, 0.4)" 
+            boxShadow: isDark
+              ? "0 10px 40px rgba(0, 0, 0, 0.4)"
               : "0 10px 40px rgba(0, 0, 0, 0.1)",
             border: `1px solid ${isDark ? "#495057" : "#dee2e6"}`,
             transition: "all 0.3s ease",
@@ -125,21 +85,7 @@ const SignIn: React.FC = () => {
         >
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: "32px" }}>
-            <h1
-              style={{
-                fontSize: "32px",
-                fontWeight: "700",
-                margin: "0 0 8px 0",
-                background: isDark 
-                  ? "linear-gradient(135deg, #e9ecef, #adb5bd)" 
-                  : "linear-gradient(135deg, #007bff, #0056b3)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              RateStack
-            </h1>
+            <RateStackH1 />
             <p
               style={{
                 fontSize: "18px",
@@ -148,7 +94,7 @@ const SignIn: React.FC = () => {
                 fontWeight: "500",
               }}
             >
-              Welcome Back
+              Welcome
             </p>
             <p
               style={{
@@ -158,7 +104,8 @@ const SignIn: React.FC = () => {
                 lineHeight: "1.5",
               }}
             >
-              Sign in to access your dashboard and contribute to our community-driven platform evaluations.
+              Sign in to access your evaluations and contribute to our
+              community-driven platform.
             </p>
           </div>
 
@@ -181,8 +128,13 @@ const SignIn: React.FC = () => {
                 gap: "8px",
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
               </svg>
               {authSuccess}
             </div>
@@ -207,8 +159,13 @@ const SignIn: React.FC = () => {
                 gap: "8px",
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+              >
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
               </svg>
               {authError}
             </div>
@@ -270,7 +227,8 @@ const SignIn: React.FC = () => {
                 lineHeight: "1.5",
               }}
             >
-              Don't have an account? No worries! Simply sign in with any of the methods above to create your account automatically.
+              Don't have an account? No worries! Simply sign in with any of the
+              methods above to create your account automatically.
             </p>
             <p
               style={{

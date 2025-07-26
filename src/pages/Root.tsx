@@ -1,6 +1,8 @@
 import LinkToDashboard from "../components/linkButtons/LinkToDashboard";
 import LinkToSignIn from "../components/linkButtons/SignIn";
 import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
+import ThemeToggle from "../components/theme/ThemeToggle";
+import { RateStackH1 } from "../components/title/title";
 
 const Root = () => {
   return (
@@ -10,6 +12,16 @@ const Root = () => {
         position: "relative",
       }}
     >
+      <div
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "20px",
+          zIndex: 10,
+        }}
+      >
+        <ThemeToggle />
+      </div>
       <div
         style={{
           position: "absolute",
@@ -42,26 +54,10 @@ const Root = () => {
             width: "100%",
           }}
         >
-          <h1
-            style={{
-              fontSize: "4rem",
-              fontWeight: "800",
-              background: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-              WebkitBackgroundClip: "text",
-              WebkitTextFillColor: "transparent",
-              backgroundClip: "text",
-              marginBottom: "0.5rem",
-              textShadow: "0 4px 8px rgba(0,0,0,0.1)",
-              letterSpacing: "-2px",
-            }}
-          >
-            RateStack
-          </h1>
-
+          <RateStackH1 />
           <br />
           <SearchBoxLinkOut />
           <br />
-
           <p
             style={{
               fontSize: "1.25rem",
@@ -75,7 +71,8 @@ const Root = () => {
           >
             <span
               style={{
-                background: "linear-gradient(90deg, #667eea, #764ba2, #667eea)",
+                background:
+                  "linear-gradient(90deg, #667eea, #703fa1ff, #667eea)",
                 backgroundSize: "200% 100%",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
@@ -88,7 +85,6 @@ const Root = () => {
             </span>{" "}
             cloud platform evaluations.
           </p>
-
           <style>{`
             @keyframes shimmer {
               0%, 100% { background-position: 200% 0; }

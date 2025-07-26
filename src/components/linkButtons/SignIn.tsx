@@ -13,7 +13,7 @@ export const LinkToSignIn = ({
 }: LinkToSignInProps) => {
   const defaultStyle: React.CSSProperties = {
     padding: "12px 24px",
-    backgroundColor: "#5d2fc9ff",
+    backgroundColor: "#703fa1ff",
     color: "white",
     border: "none",
     borderRadius: "6px",
@@ -36,7 +36,7 @@ export const LinkToSignIn = ({
         e.currentTarget.style.color = "#495057";
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.backgroundColor = "#007bff";
+        e.currentTarget.style.backgroundColor = "#703fa1ff";
         e.currentTarget.style.color = "white";
       }}
       className={className}
