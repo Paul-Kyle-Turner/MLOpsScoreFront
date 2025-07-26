@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import BasePage from "./Base";
 import { PlatformSelector } from "../components/evaluation/PlatformSelector";
 import { EvaluationForm } from "../components/evaluation/EvaluationForm";
 import { EvaluationResults } from "../components/evaluation/EvaluationResults";
@@ -176,7 +175,7 @@ export const Evaluation = () => {
   };
 
   return (
-    <BasePage>
+    <div>
       <div
         style={{
           minHeight: "80vh",
@@ -208,6 +207,6 @@ export const Evaluation = () => {
 
         {renderContent()}
       </div>
-    </BasePage>
+    </div>
   );
 };

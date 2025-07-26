@@ -4,7 +4,6 @@ import type { PlatformInformation } from "../model/platform";
 import { searchPlatform } from "../api/search";
 import { PlatformCard } from "../components/platform/PlatformCard";
 import DontSeeYourPlatform from "../components/dontSeeYourPlatform/DontSeeYourPlatform";
-import BasePage from "./Base";
 
 const PlatformsSearch: React.FC = () => {
   const { query } = useParams<{ query: string }>();
@@ -100,7 +99,7 @@ const PlatformsSearch: React.FC = () => {
   }
 
   return (
-    <BasePage title="MLOps Platforms">
+    <div>
       <div className="container mx-auto px-4 max-w-6xl">
         {/* Header */}
         <header className="text-center mb-6">
@@ -159,7 +158,7 @@ const PlatformsSearch: React.FC = () => {
           </div>
         )}
       </div>
-    </BasePage>
+    </div>
   );
 };
 

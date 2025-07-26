@@ -1,5 +1,4 @@
 import { useNavigate } from "react-router-dom";
-import BasePage from "./Base";
 
 const NoMatch = () => {
   const navigate = useNavigate();
@@ -13,7 +12,7 @@ const NoMatch = () => {
   };
 
   return (
-    <BasePage title="Page Not Found - MLOps Platform Score" noSearch={true}>
+    <div>
       <div
         style={{
           display: "flex",
@@ -116,7 +115,7 @@ const NoMatch = () => {
           </button>
         </div>
       </div>
-    </BasePage>
+    </div>
   );
 };
 

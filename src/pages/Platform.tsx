@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { getPlatformByName, getPlatform } from "../api/platform";
 import { EvaluateButton } from "../components/evaluateButton/EvaluateButton";
-import BasePage from "./Base";
 import type {
   PlatformInformation,
   ComputeInstance,
@@ -65,7 +64,7 @@ const Platform: React.FC = () => {
 
   if (loading) {
     return (
-      <BasePage title="Loading Platform...">
+      <div>
         <div
           className="d-flex justify-content-center align-items-center"
           style={{ minHeight: "400px" }}
@@ -82,13 +81,13 @@ const Platform: React.FC = () => {
             </p>
           </div>
         </div>
-      </BasePage>
+      </div>
     );
   }
 
   if (error) {
     return (
-      <BasePage title="Error">
+      <div>
         <div className="container mt-4">
           <div className="row justify-content-center">
             <div className="col-md-6">
@@ -110,13 +109,13 @@ const Platform: React.FC = () => {
             </div>
           </div>
         </div>
-      </BasePage>
+      </div>
     );
   }
 
   if (!platform) {
     return (
-      <BasePage title="Platform Not Found">
+      <div>
         <div className="container mt-4">
           <div className="row justify-content-center">
             <div className="col-md-6">
@@ -141,12 +140,12 @@ const Platform: React.FC = () => {
             </div>
           </div>
         </div>
-      </BasePage>
+      </div>
     );
   }
 
   return (
-    <BasePage title={platform.platformName}>
+    <div>
       <div className="container-fluid px-4 py-3">
         {/* Platform Header */}
         <div
@@ -289,7 +288,7 @@ const Platform: React.FC = () => {
         <SupportSection supportTiers={platform.supportTiers} />
         <AdditionalInfoSection platform={platform} />
       </div>
-    </BasePage>
+    </div>
   );
 };
 

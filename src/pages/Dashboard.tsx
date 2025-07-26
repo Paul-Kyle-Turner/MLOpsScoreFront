@@ -2,18 +2,13 @@ import { Link } from "react-router";
 import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
 import { Scroller } from "../components/dashboardScroller/Scroller";
 import { CreateNewPlatform } from "../components/platform/CreateNewPlatform";
-import BasePage from "./Base";
 import { useSlackAuth } from "../hooks/useSlackAuth";
 
 export const Dashboard = () => {
   const { authState } = useSlackAuth();
 
   return (
-    <BasePage
-      title="MLOps Platform Score Dashboard"
-      noSearch={true}
-      noHome={true}
-    >
+    <div>
       <div
         style={{
           display: "flex",
@@ -70,6 +65,6 @@ export const Dashboard = () => {
       <div style={{ marginTop: "40px" }}>
         <Scroller title="Discover MLOps Platforms" pageSize={8} />
       </div>
-    </BasePage>
+    </div>
   );
 };

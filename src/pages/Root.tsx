@@ -1,32 +1,103 @@
 import LinkToDashboard from "../components/linkButtons/LinkToDashboard";
-import { SlackLogin } from "../components/slackLogin/SlackLogin";
-import BasePage from "./Base";
+import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
+import { FirebaseUserProfile } from "../components/firebaseAuth";
+import { UnifiedAuth } from "../components/unifiedAuth";
+import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
+import { useState } from "react";
 
 const Root = () => {
+  const { currentUser, isLoading } = useFirebaseAuth();
+  const [authError, setAuthError] = useState<string | null>(null);
+
+  const handleAuthSuccess = () => {
+    setAuthError(null);
+  };
+
+  const handleAuthError = (error: string) => {
+    setAuthError(error);
+  };
+
   return (
-    <BasePage title="Welcome to MLOps Platform Score">
+    <div
+      style={{
+        minHeight: "100vh",
+        position: "relative",
+      }}
+    >
       <div
         style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          justifyContent: "center",
-          textAlign: "center",
-          padding: "20px",
+          position: "absolute",
+          top: "20px",
+          right: "20px",
         }}
       >
-        <p>A community-driven app for evaluating MLOps platforms.</p>
-
-        <p>
-          We request that you be a part of our community to contribute and improve
-          the platform.
-        </p>
-        <SlackLogin />
-
-        <p>Or you can jump right in and start exploring the platform.</p>
-        <LinkToDashboard />
+        <LinkToDashboard children="Dashboard" />
       </div>
-    </BasePage>
+      <div
+        style={{
+          minHeight: "100vh",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            textAlign: "center",
+            padding: "20px",
+            maxWidth: "600px",
+          }}
+        >
+          <h1>RateStack</h1>
+
+          <br />
+          <SearchBoxLinkOut />
+          <br />
+
+          <p>Community-driven cloud platform evaluations.</p>
+
+          <p>
+            We request that you be a part of our community to contribute and
+            improve the platform.
+          </p>
+
+          {/* Authentication Section */}
+          <div style={{ marginBottom: "20px", width: "100%" }}>
+            {isLoading ? (
+              <div>Loading authentication...</div>
+            ) : currentUser ? (
+              <FirebaseUserProfile />
+            ) : (
+              <div>
+                <UnifiedAuth
+                  onSuccess={handleAuthSuccess}
+                  onError={handleAuthError}
+                />
+                {authError && (
+                  <div
+                    style={{
+                      color: "red",
+                      marginTop: "10px",
+                      padding: "10px",
+                      backgroundColor: "#ffe6e6",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    {authError}
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          <br />
+        </div>
+      </div>
+    </div>
   );
 };
 
