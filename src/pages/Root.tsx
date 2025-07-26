@@ -1,22 +1,8 @@
 import LinkToDashboard from "../components/linkButtons/LinkToDashboard";
 import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
-import { FirebaseUserProfile } from "../components/firebaseAuth";
-import { UnifiedAuth } from "../components/unifiedAuth";
-import { useFirebaseAuth } from "../hooks/useFirebaseAuth";
-import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Root = () => {
-  const { currentUser, isLoading } = useFirebaseAuth();
-  const [authError, setAuthError] = useState<string | null>(null);
-
-  const handleAuthSuccess = () => {
-    setAuthError(null);
-  };
-
-  const handleAuthError = (error: string) => {
-    setAuthError(error);
-  };
-
   return (
     <div
       style={{
@@ -29,8 +15,36 @@ const Root = () => {
           position: "absolute",
           top: "20px",
           right: "20px",
+          display: "flex",
+          gap: "10px",
         }}
       >
+        <Link
+          to="/signin"
+          style={{
+            padding: "12px 24px",
+            backgroundColor: "#007bff",
+            color: "white",
+            border: "none",
+            borderRadius: "6px",
+            cursor: "pointer",
+            fontSize: "16px",
+            fontWeight: "500",
+            textDecoration: "none",
+            display: "inline-block",
+            transition: "background-color 0.2s ease",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.backgroundColor = "#e9ecef";
+            e.currentTarget.style.color = "#495057";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.backgroundColor = "#f8f9fa";
+            e.currentTarget.style.color = "#6c757d";
+          }}
+        >
+          Sign In
+        </Link>
         <LinkToDashboard children="Dashboard" />
       </div>
       <div
@@ -64,38 +78,9 @@ const Root = () => {
             We request that you be a part of our community to contribute and
             improve the platform.
           </p>
-
-          {/* Authentication Section */}
-          <div style={{ marginBottom: "20px", width: "100%" }}>
-            {isLoading ? (
-              <div>Loading authentication...</div>
-            ) : currentUser ? (
-              <FirebaseUserProfile />
-            ) : (
-              <div>
-                <UnifiedAuth
-                  onSuccess={handleAuthSuccess}
-                  onError={handleAuthError}
-                />
-                {authError && (
-                  <div
-                    style={{
-                      color: "red",
-                      marginTop: "10px",
-                      padding: "10px",
-                      backgroundColor: "#ffe6e6",
-                      borderRadius: "4px",
-                    }}
-                  >
-                    {authError}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          <br />
         </div>
+
+        <br />
       </div>
     </div>
   );

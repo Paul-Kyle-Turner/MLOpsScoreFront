@@ -1,5 +1,5 @@
 import React from "react";
-import { useSlackAuth } from "../../hooks/useSlackAuth";
+import { useSlackAuth } from "../../hooks/useUnifiedAuth";
 
 export const SlackAuthStatus: React.FC = () => {
   const { authState, isLoading, error, refetchAuth } = useSlackAuth();

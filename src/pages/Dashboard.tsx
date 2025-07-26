@@ -2,10 +2,10 @@ import { Link } from "react-router";
 import { SearchBoxLinkOut } from "../components/searchBox/SearchBoxLinkOut";
 import { Scroller } from "../components/dashboardScroller/Scroller";
 import { CreateNewPlatform } from "../components/platform/CreateNewPlatform";
-import { useSlackAuth } from "../hooks/useSlackAuth";
+import { useUnifiedAuth } from "../hooks/useUnifiedAuth";
 
 export const Dashboard = () => {
-  const { authState } = useSlackAuth();
+  const { auth } = useUnifiedAuth();
 
   return (
     <div>
@@ -57,7 +57,7 @@ export const Dashboard = () => {
             </button>
           </Link>
 
-          {authState?.ok && <CreateNewPlatform size="lg" />}
+          {auth && <CreateNewPlatform size="lg" />}
         </div>
       </div>
 

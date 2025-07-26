@@ -6,15 +6,19 @@ import { Evaluation } from "../pages/Evaluation";
 import PlatformsSearch from "../pages/PlatformsSearch";
 import Platform from "../pages/Platform";
 import NoMatch from "../pages/NoMatch";
-
-import { useSlackAuth } from "../hooks/useSlackAuth";
+import SignIn from "../pages/SignIn";
+import { useUnifiedAuth } from "../hooks/useUnifiedAuth";
 
 const AppRouter = () => {
-  const { authState } = useSlackAuth();
+  const { auth } = useUnifiedAuth();
   const baseRouter = [
     {
       path: "/",
       element: <Root />,
+    },
+    {
+      path: "/signin",
+      element: <SignIn />,
     },
     {
       path: "/dashboard",
@@ -46,7 +50,7 @@ const AppRouter = () => {
     },
   ];
 
-  if (!authState?.ok) {
+  if (!auth) {
     return <RouterProvider router={createBrowserRouter(baseRouter)} />;
   } else {
     const allRoutes = [...authenticatedRouter, ...baseRouter];
